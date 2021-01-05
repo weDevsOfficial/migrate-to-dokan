@@ -1,0 +1,20 @@
+{
+    "name": "wedevs/migrate-to-dokan",
+    "description": "Migrate Existing Data to Dokan",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Al-Amin Sarker",
+            "email": "cseal.amin.09@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "WeDevs\\MigrateToDokan\\": "includes/"
+        },
+        "files": []
+    }
+}
