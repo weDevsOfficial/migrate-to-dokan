@@ -8,6 +8,8 @@
  * Author URI: https://wedevs.com/
  * License: GPL2
  */
+
+
 if( ! defined( 'ABSPATH' ) ) exit;
 
 final class Migrate_To_Dokan {
@@ -42,6 +44,7 @@ final class Migrate_To_Dokan {
     public function init_plugin() {
 		if( is_admin() ) {
 			new WeDevs\MigrateToDokan\Admin\Menu();
+			// new WeDevs\MigrateToDokan\Admin\Welcome();
 		}
 	}
 
@@ -56,7 +59,7 @@ final class Migrate_To_Dokan {
     }
 
 	public function activate() {
-
+		new WeDevs\MigrateToDokan\Admin\Welcome();
 	}
 }
 

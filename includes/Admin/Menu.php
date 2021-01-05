@@ -8,17 +8,10 @@ class Menu {
 	}
 
 	public function add_migrate_to_dokan_menu() {
-		// 1st page title, 
-		// 2nd menu title, 
-		// 3rd who manage it, 
-		// 4th slug url, 
-		// 5th callback method, 
-		// 6th menu icon.
-		add_menu_page( __( 'Migrate to Dokan', 'weDevs'), __( 'Migrate To Dokan', 'weDevs'), 'manage_options', 'migrate-to-dokan-menu', [ $this, 'add_migrate_to_dokan_page' ], 'dashicons-buddicons-buddypress-logo' );
+		add_menu_page( __( 'Migrate to Dokan', 'weDevs'), __( 'Migrate To Dokan', 'weDevs'), 'manage_options', 'migrate-to-dokan-menu', [ $this, 'add_migrate_to_dokan_page' ], 'dashicons-database' );
 	}
 
-
 	public function add_migrate_to_dokan_page() {
-		return 'Welcome!';
+		echo 'Welcome!';
 	}
 }
