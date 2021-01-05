@@ -1,6 +1,6 @@
 <?php 
 
-namespace weDevs\MigrateToDokan\Admin;
+namespace WeDevs\MigrateToDokan\Admin;
 
 class Menu {
 	function __construct() {

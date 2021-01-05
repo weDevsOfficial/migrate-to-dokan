@@ -41,7 +41,7 @@ final class Migrate_To_Dokan {
 
     public function init_plugin() {
 		if( is_admin() ) {
-			new weDevs\MigrateToDokan\Admin\Menu();
+			new WeDevs\MigrateToDokan\Admin\Menu();
 		}
 	}
 
