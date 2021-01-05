@@ -42,12 +42,11 @@ final class Migrate_To_Dokan {
     }
 
     public function init_plugin() {
-		if( is_admin() ) {
+		if ( is_admin() ) {
 			new WeDevs\MigrateToDokan\Admin\Menu();
 			// new WeDevs\MigrateToDokan\Admin\Welcome();
 		}
 	}
-
 
 	public function define_constants() {
         define( 'MIGRATE_TO_DOKAN_PLUGIN_VERSION', $this->version );
