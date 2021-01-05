@@ -52,6 +52,8 @@ final class Migrate_To_Dokan {
 	public function define_constants() {
         define( 'MIGRATE_TO_DOKAN_PLUGIN_VERSION', $this->version );
         define( 'MIGRATE_TO_DOKAN_FILE', __FILE__ );
+        define( 'MIGRATE_DOKAN_DIR', dirname( MIGRATE_TO_DOKAN_FILE ) );
+        define( 'MIGRATE_DOKAN_TEMPLATE_DIR', MIGRATE_DOKAN_DIR . '/templates' );
         define( 'MIGRATE_TO_DOKAN_DIR', dirname( MIGRATE_TO_DOKAN_FILE ) );
         define( 'MIGRATE_TO_DOKAN_INC', MIGRATE_TO_DOKAN_DIR . '/includes' );
         define( 'MIGRATE_TO_DOKAN_ADMIN_DIR', MIGRATE_TO_DOKAN_INC . '/Admin' );
@@ -59,7 +61,7 @@ final class Migrate_To_Dokan {
     }
 
 	public function activate() {
-		new WeDevs\MigrateToDokan\Admin\Welcome();
+		// new WeDevs\MigrateToDokan\Admin\Welcome();
 	}
 }
 

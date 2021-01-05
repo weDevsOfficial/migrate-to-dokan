@@ -12,6 +12,14 @@ class Menu {
 	}
 
 	public function add_migrate_to_dokan_page() {
-		echo 'Welcome!';
+		$action = isset( $_GET['page'] ) ? $_GET['page'] : '';
+		
+		if ( $action == 'migrate-to-dokan-menu' ) {
+			$template = MIGRATE_DOKAN_TEMPLATE_DIR . '/setup-page.php';
+		}
+
+		if ( file_exists( $template ) ) {
+			include_once $template;
+		}
 	}
 }

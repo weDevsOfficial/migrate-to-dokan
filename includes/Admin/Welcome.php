@@ -14,14 +14,13 @@ Class Welcome {
 	}
 
 	public function dokan_redirect() {
-		//echo  . ''; die;
-		//wp_redirect( admin_url('?page=migrate-to-dokan') );
+		wp_redirect( admin_url('?page=migrate-to-dokan') );
 	}
 
 	public function dokan_migration() {
 		if ( filter_input(INPUT_GET, 'page') == 'migrate-to-dokan') {
-			error_log(print_r('Hello', true));
-			// echo 'welcome';
+			// error_log(print_r('Hello', true));
+			include_once MIGRATE_DOKAN_TEMPLATE_DIR . '/setup-page.php';
 		}
 	}
 }

@@ -1,0 +1,17 @@
+.migrate-to-dokan {
+	border: 1px solid #ccc;
+	max-width: 500px;
+}
+.migrate-to-dokan-list {
+	border-bottom: 2px solid #ddd;
+	padding-bottom: 10px;
+}
+.migrate-to-dokan-list li {
+	list-style-type: none;
+	display: inline;
+}
+.migrate-to-dokan li a {
+	text-decoration: none;
+	font-size: 18px;
+	margin-right: 80px;
+}
