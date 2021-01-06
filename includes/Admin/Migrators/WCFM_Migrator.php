@@ -51,7 +51,7 @@ class WCFM_Migrator implements Migrator_Interface {
 
     public function migrate()
     {
-        return 'Success';
+		$this->store_setting_migrate(3);
     }
 
     function dokan_allwoed_vendor_user_roles( $user_roles ) {
@@ -67,8 +67,11 @@ class WCFM_Migrator implements Migrator_Interface {
 		
 		$vendor_user = get_userdata( $vendor_id );
 		
-		$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
-		
+		// $vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
+		$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+
+		// var_dump($vendor_data);
+
 		if( !$vendor_data || ( $vendor_data && !is_array( $vendor_data ) ) ) $vendor_data = array(); 
 		
 		$vendor_data['banner_type'] = 'single_img';
@@ -109,14 +112,27 @@ class WCFM_Migrator implements Migrator_Interface {
 		$vendor_data['address']['zip']      = isset( $vendor_data['customer_support']['zip'] ) ? $vendor_data['customer_support']['zip'] : '';
 		
 		// Store Policy
-		$wcfm_policy_vendor_options = array();
-		$wcfm_policy_vendor_options['policy_tab_title']    = ''; 
-		$wcfm_policy_vendor_options['shipping_policy']     = get_user_meta( $vendor_id, '_dps_ship_policy', true );
-		$wcfm_policy_vendor_options['refund_policy']       = get_user_meta( $vendor_id, '_dps_refund_policy', true );
-		$wcfm_policy_vendor_options['cancellation_policy'] = get_user_meta( $vendor_id, '_dps_refund_policy', true );
-		update_user_meta( $vendor_id, 'wcfm_policy_vendor_options', $wcfm_policy_vendor_options );
+		// $wcfm_policy_vendor_options = array();
+		// $wcfm_policy_vendor_options['policy_tab_title']    = ''; 
+		// $wcfm_policy_vendor_options['shipping_policy']     = get_user_meta( $vendor_id, '_dps_ship_policy', true );
+		// $wcfm_policy_vendor_options['refund_policy']       = get_user_meta( $vendor_id, '_dps_refund_policy', true );
+		// $wcfm_policy_vendor_options['cancellation_policy'] = get_user_meta( $vendor_id, '_dps_refund_policy', true );
+		// update_user_meta( $vendor_id, 'wcfm_policy_vendor_options', $wcfm_policy_vendor_options );
 		
+
+		$wcfm_policies = get_user_meta( $vendor_id, 'wcfm_policy_vendor_options', true );
+		update_user_meta($vendor_id, '_dps_ship_policy', isset($wcfm_policies['shipping_policy']) ? $wcfm_policies['shipping_policy'] : '');
+
+		$refund_policy = isset($wcfm_policies['refund_policy']) ? $wcfm_policies['refund_policy'] : null;
+
+		$refund_policy .= isset($wcfm_policies['cancellation_policy']) ? ('; ' . $wcfm_policies['cancellation_policy']) : null;
+
+		update_user_meta($vendor_id, '_dps_refund_policy', $refund_policy);
+
+		update_user_meta( $vendor_id, 'wcfm_policy_vendor_options', $wcfm_policy_vendor_options );
+
 		// Store SEO
+		$vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
 		$vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
 		$vendor_data['store_seo']['wcfmmp-seo-meta-desc']      = isset( $vendor_data['store_seo']['dokan-seo-meta-desc'] ) ? $vendor_data['store_seo']['dokan-seo-meta-desc'] : '';
 		$vendor_data['store_seo']['wcfmmp-seo-meta-keywords']  = isset( $vendor_data['store_seo']['dokan-seo-meta-keywords'] ) ? $vendor_data['store_seo']['dokan-seo-meta-keywords'] : '';
@@ -440,7 +456,7 @@ class WCFM_Migrator implements Migrator_Interface {
 									if( $commission_id ) {
 									
 										// Commission Ledger Update
-										$reference_details = sprintf( __( 'Commission for %s order.', 'wc-multivendor-marketplace-migration' ), '<b>' . get_the_title( $product_id ) . '</b>' );
+										$reference_details = sprintf( __( 'Commission for %s order.', 'wc-multivendor-marketplace-migration' ), '<br>' . get_the_title( $product_id ) . '</br>' );
 										try {
 											$wpdb->query(
 														$wpdb->prepare(
