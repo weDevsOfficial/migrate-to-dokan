@@ -146,16 +146,24 @@ class WCFM_Migrator implements Migrator_Interface {
 		update_user_meta($vendor_id, '_dps_refund_policy', $refund_policy);
 
 		// Store SEO
-		$vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-meta-desc']      = isset( $vendor_data['store_seo']['dokan-seo-meta-desc'] ) ? $vendor_data['store_seo']['dokan-seo-meta-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-meta-keywords']  = isset( $vendor_data['store_seo']['dokan-seo-meta-keywords'] ) ? $vendor_data['store_seo']['dokan-seo-meta-keywords'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-title']       = isset( $vendor_data['store_seo']['dokan-seo-og-title'] ) ? $vendor_data['store_seo']['dokan-seo-og-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-desc']        = isset( $vendor_data['store_seo']['dokan-seo-og-desc'] ) ? $vendor_data['store_seo']['dokan-seo-og-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-image']       = isset( $vendor_data['store_seo']['dokan-seo-og-image'] ) ? $vendor_data['store_seo']['dokan-seo-og-image'] : 0;
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-title']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-title'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-desc']   = isset( $vendor_data['store_seo']['dokan-seo-twitter-desc'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-image']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-image'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-image'] : 0;
+		// $vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
+		$vendor_data['store_seo']['dokan-seo-meta-title']     = isset( $vendor_data['store_seo']['wcfmmp-seo-meta-title'] ) ? $vendor_data['store_seo']['wcfmmp-seo-meta-title'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-meta-desc']      = isset( $vendor_data['store_seo']['dokan-seo-meta-desc'] ) ? $vendor_data['store_seo']['dokan-seo-meta-desc'] : '';
+		$vendor_data['store_seo']['dokan-seo-meta-desc']      = isset( $vendor_data['store_seo']['wcfmmp-seo-meta-desc'] ) ? $vendor_data['store_seo']['wcfmmp-seo-meta-desc'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-meta-keywords']  = isset( $vendor_data['store_seo']['dokan-seo-meta-keywords'] ) ? $vendor_data['store_seo']['dokan-seo-meta-keywords'] : '';
+		$vendor_data['store_seo']['dokan-seo-meta-keywords']  = isset( $vendor_data['store_seo']['wcfmmp-seo-meta-keywords'] ) ? $vendor_data['store_seo']['wcfmmp-seo-meta-keywords'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-og-title']       = isset( $vendor_data['store_seo']['dokan-seo-og-title'] ) ? $vendor_data['store_seo']['dokan-seo-og-title'] : '';
+		$vendor_data['store_seo']['dokan-seo-og-title']       = isset( $vendor_data['store_seo']['wcfmmp-seo-og-title'] ) ? $vendor_data['store_seo']['wcfmmp-seo-og-title'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-og-desc']        = isset( $vendor_data['store_seo']['dokan-seo-og-desc'] ) ? $vendor_data['store_seo']['dokan-seo-og-desc'] : '';
+		$vendor_data['store_seo']['dokan-seo-og-desc']        = isset( $vendor_data['store_seo']['wcfmmp-seo-og-desc'] ) ? $vendor_data['store_seo']['wcfmmp-seo-og-desc'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-og-image']       = isset( $vendor_data['store_seo']['dokan-seo-og-image'] ) ? $vendor_data['store_seo']['dokan-seo-og-image'] : 0;
+		$vendor_data['store_seo']['dokan-seo-og-image']       = isset( $vendor_data['store_seo']['wcfmmp-seo-og-image'] ) ? $vendor_data['store_seo']['wcfmmp-seo-og-image'] : 0;
+		// $vendor_data['store_seo']['wcfmmp-seo-twitter-title']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-title'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-title'] : '';
+		$vendor_data['store_seo']['dokan-seo-twitter-title']  = isset( $vendor_data['store_seo']['wcfmmp-seo-twitter-title'] ) ? $vendor_data['store_seo']['wcfmmp-seo-twitter-title'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-twitter-desc']   = isset( $vendor_data['store_seo']['dokan-seo-twitter-desc'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-desc'] : '';
+		$vendor_data['store_seo']['dokan-seo-twitter-desc']   = isset( $vendor_data['store_seo']['wcfmmp-seo-twitter-desc'] ) ? $vendor_data['store_seo']['wcfmmp-seo-twitter-desc'] : '';
+		// $vendor_data['store_seo']['wcfmmp-seo-twitter-image']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-image'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-image'] : 0;
+		$vendor_data['store_seo']['dokan-seo-twitter-image']  = isset( $vendor_data['store_seo']['wcfmmp-seo-twitter-image'] ) ? $vendor_data['store_seo']['wcfmmp-seo-twitter-image'] : 0;
 		
 		// Set Store name
 		// update_user_meta( $vendor_id, 'store_name', $vendor_data['store_name'] );
