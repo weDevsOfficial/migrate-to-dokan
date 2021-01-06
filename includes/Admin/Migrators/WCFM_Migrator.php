@@ -72,26 +72,41 @@ class WCFM_Migrator implements Migrator_Interface {
 		if( !$vendor_data || ( $vendor_data && !is_array( $vendor_data ) ) ) $vendor_data = array(); 
 		
 		$vendor_data['banner_type'] = 'single_img';
-		$vendor_data['list_banner'] = isset( $vendor_data['banner'] ) ? $vendor_data['banner'] : '';
+		// $vendor_data['list_banner'] = isset( $vendor_data['banner'] ) ? $vendor_data['banner'] : '';
+		$vendor_data['banner'] = isset( $vendor_data['list_banner'] ) ? $vendor_data['list_banner'] : '';
 		$vendor_data['store_name']  = isset( $vendor_data['store_name'] ) ? $vendor_data['store_name'] : $vendor_user->display_name;
+		
+		/** */
 		$vendor_data['email']       = $vendor_user->user_email;
 		
 		// Store Location
 		$vendor_data['find_address']   = isset( $vendor_data['find_address'] ) ? esc_attr( $vendor_data['find_address'] ) : '';
-		$vendor_data['store_location'] = isset( $vendor_data['location'] ) ? esc_attr( $vendor_data['location'] ) : '';
+		// $vendor_data['store_location'] = isset( $vendor_data['location'] ) ? esc_attr( $vendor_data['location'] ) : '';
+		$vendor_data['location'] = isset( $vendor_data['store_location'] ) ? esc_attr( $vendor_data['store_location'] ) : '';
+		/** */
 		$vendor_data['store_lat']      = 0;
 		$vendor_data['store_lng']      = 0;
 		
 		// Customer Support
 		$vendor_data['customer_support'] = array();
-		$vendor_data['customer_support']['phone']    = isset( $vendor_data['phone'] ) ? esc_attr( $vendor_data['phone'] ) : '';
+
+		// $vendor_data['customer_support']['phone']    = isset( $vendor_data['phone'] ) ? esc_attr( $vendor_data['phone'] ) : '';
+		$vendor_data['phone']    = isset( $vendor_data['customer_support']['phone'] ) ? esc_attr( $vendor_data['customer_support']['phone'] ) : '';
+		/** */
 		$vendor_data['customer_support']['email']    = $vendor_user->user_email;
-		$vendor_data['customer_support']['address1'] = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
-		$vendor_data['customer_support']['address2'] = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
-		$vendor_data['customer_support']['country']  = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
-		$vendor_data['customer_support']['city']     = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
-		$vendor_data['customer_support']['state']    = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
-		$vendor_data['customer_support']['zip']      = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
+		
+		// $vendor_data['customer_support']['address1'] = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
+		$vendor_data['address']['street_1'] = isset( $vendor_data['customer_support']['address1'] ) ? $vendor_data['customer_support']['address1'] : '';
+		// $vendor_data['customer_support']['address2'] = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
+		$vendor_data['address']['street_2'] = isset( $vendor_data['customer_support']['address2'] ) ? $vendor_data['customer_support']['address2'] : '';
+		// $vendor_data['customer_support']['country']  = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
+		$vendor_data['address']['country']  = isset( $vendor_data['customer_support']['country'] ) ? $vendor_data['customer_support']['country'] : '';
+		// $vendor_data['customer_support']['city']     = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
+		$vendor_data['address']['city']     = isset( $vendor_data['customer_support']['city'] ) ? $vendor_data['customer_support']['city'] : '';
+		// $vendor_data['customer_support']['state']    = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
+		$vendor_data['address']['state']    = isset( $vendor_data['customer_support']['state'] ) ? $vendor_data['customer_support']['state'] : '';
+		// $vendor_data['customer_support']['zip']      = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
+		$vendor_data['address']['zip']      = isset( $vendor_data['customer_support']['zip'] ) ? $vendor_data['customer_support']['zip'] : '';
 		
 		// Store Policy
 		$wcfm_policy_vendor_options = array();
