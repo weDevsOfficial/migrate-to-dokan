@@ -199,7 +199,7 @@ class WCFM_Migrator implements Migrator_Interface {
 		
 		$offset = 0;
 		$post_count = 9999;
-  	while( $offset < $post_count ) {
+  		while( $offset < $post_count ) {
 			$sql  = 'SELECT * FROM ' . $wpdb->prefix . 'dokan_orders AS commission';
 			$sql .= ' WHERE 1=1';
 			$sql .= " AND `seller_id` = {$vendor_id}";
@@ -493,7 +493,7 @@ class WCFM_Migrator implements Migrator_Interface {
 		// Withdrawal Migration
 		$offset = 0;
 		$post_count = 9999;
-  	while( $offset < $post_count ) {
+  		while( $offset < $post_count ) {
 			$sql  = 'SELECT * FROM ' . $wpdb->prefix . 'dokan_withdraw AS commission';
 			$sql .= ' WHERE 1=1';
 			$sql .= " AND `user_id` = {$vendor_id}";

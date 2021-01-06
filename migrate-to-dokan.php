@@ -22,11 +22,13 @@ final class Migrate_To_Dokan {
 		
 		require_once __DIR__ . '/vendor/autoload.php';
 
-		$this->define_constants();
+        $this->define_constants();
+        $this->instance();
 		
-		register_activation_hook( __FILE__, [ $this, 'activate' ] );
+		//register_activation_hook( __FILE__, [ $this, 'activate' ] );
 
-		add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
+        // add_action( 'init', [ $this, 'init_plugin' ] );
+
 	}
 
 
@@ -41,12 +43,17 @@ final class Migrate_To_Dokan {
         return $instance;
     }
 
+    public function instance() {
+		new WeDevs\MigrateToDokan\Admin\Menu();
+    }
+    
     public function init_plugin() {
-		if ( is_admin() ) {
-			new WeDevs\MigrateToDokan\Admin\Menu();
-			// new WeDevs\MigrateToDokan\Admin\Welcome();
-		}
-	}
+        $has_setup_wizard = get_option( 'dokan-migrate-setup-wizard', 'no' );
+
+        if ( $has_setup_wizard == 'no' ) {
+            //wp_safe_redirect('http://wplearn.test/wp-admin/admin.php?page=migrate-to-dokan1');
+        }
+    }
 
 	public function define_constants() {
         define( 'MIGRATE_TO_DOKAN_PLUGIN_VERSION', $this->version );
@@ -60,7 +67,13 @@ final class Migrate_To_Dokan {
     }
 
 	public function activate() {
-		// new WeDevs\MigrateToDokan\Admin\Welcome();
+        echo 2;
+        // new WeDevs\MigrateToDokan\Admin\Welcome();
+        if ($_GET['page'] !== 'migrate-to-dokan1') {
+            wp_safe_redirect(admin_url('admin.php?page=migrate-to-dokan1'));
+        }
+
+        exit();
 	}
 }
 

@@ -29,7 +29,7 @@
     cursor: pointer;
     padding: 10px 5px;
     margin: 10px 0px 10px 5px;
-    float: right
+    /* float: right */
 }
 
 .migrate-to-dokan .action-button-previous {
@@ -42,7 +42,7 @@
     cursor: pointer;
     padding: 10px 5px;
     margin: 10px 5px 10px 0px;
-    float: right
+    /* float: right */
 }
 .migrate-to-dokan .action-button-previous:hover,
 .migrate-to-dokan .action-button-previous:focus {
@@ -88,7 +88,7 @@ input[type="button"] {
 #progressbar li {
     list-style-type: none;
     font-size: 15px;
-    width: 25%;
+    width: 33%;
     float: left;
     position: relative;
     font-weight: 400
@@ -145,4 +145,12 @@ input[type="button"] {
 
 .progress-bar {
     background-color: #EF545D;
+}
+
+.setup-wizard, .card-section {
+    width: 80%;
+    margin: auto;
+}
+.btn-group{
+
 }
