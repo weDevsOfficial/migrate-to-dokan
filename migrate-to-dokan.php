@@ -25,7 +25,7 @@ final class Migrate_To_Dokan {
         $this->define_constants();
         $this->instance();
 		
-		//register_activation_hook( __FILE__, [ $this, 'activate' ] );
+		register_activation_hook( __FILE__, [ $this, 'activate' ] );
 
         // add_action( 'init', [ $this, 'init_plugin' ] );
 
@@ -67,13 +67,7 @@ final class Migrate_To_Dokan {
     }
 
 	public function activate() {
-        echo 2;
-        // new WeDevs\MigrateToDokan\Admin\Welcome();
-        if ($_GET['page'] !== 'migrate-to-dokan1') {
-            wp_safe_redirect(admin_url('admin.php?page=migrate-to-dokan1'));
-        }
-
-        exit();
+                
 	}
 }
 

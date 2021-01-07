@@ -46,101 +46,52 @@ class WCFM_Migrator implements Migrator_Interface {
      */
     protected function get_vendor_counts()
     {
-        return get_option('_wcfmmg_vendor_count', 0);
-    }
+		$vendors = $this->get_all_vendors();
+		
+        return is_array($vendors) ? count($vendors) : 0;
+	}
+	
+	private function get_all_vendors()
+	{
+		global $WCFM;
+
+		$wcfm_all_vendors = $WCFM->wcfm_vendor_support->wcfm_get_vendor_list( true, '', '', '' );
+
+		unset($wcfm_all_vendors[0]);
+
+		return $wcfm_all_vendors;
+	}
 
     public function migrate()
     {
-        return 'Success';
+		$this->migrate_vendor(5);
     }
 
     function dokan_allwoed_vendor_user_roles( $user_roles ) {
 		return array( 'seller' );
 	}
 	
-	public function store_setting_migrate( $vendor_id ) {
-		global $WCFM, $WCFMmg;
-		
-		if( !$vendor_id ) return false;
-		
-		$vendor_data = array();
-		
-		$vendor_user = get_userdata( $vendor_id );
-		
-		$vendor_data = get_user_meta( $vendor_id, 'dokan_profile_settings', true );
-		
-		if( !$vendor_data || ( $vendor_data && !is_array( $vendor_data ) ) ) $vendor_data = array(); 
-		
-		$vendor_data['banner_type'] = 'single_img';
-		$vendor_data['list_banner'] = isset( $vendor_data['banner'] ) ? $vendor_data['banner'] : '';
-		$vendor_data['store_name']  = isset( $vendor_data['store_name'] ) ? $vendor_data['store_name'] : $vendor_user->display_name;
-		$vendor_data['email']       = $vendor_user->user_email;
-		
-		// Store Location
-		$vendor_data['find_address']   = isset( $vendor_data['find_address'] ) ? esc_attr( $vendor_data['find_address'] ) : '';
-		$vendor_data['store_location'] = isset( $vendor_data['location'] ) ? esc_attr( $vendor_data['location'] ) : '';
-		$vendor_data['store_lat']      = 0;
-		$vendor_data['store_lng']      = 0;
-		
-		// Customer Support
-		$vendor_data['customer_support'] = array();
-		$vendor_data['customer_support']['phone']    = isset( $vendor_data['phone'] ) ? esc_attr( $vendor_data['phone'] ) : '';
-		$vendor_data['customer_support']['email']    = $vendor_user->user_email;
-		$vendor_data['customer_support']['address1'] = isset( $vendor_data['address']['street_1'] ) ? $vendor_data['address']['street_1'] : '';
-		$vendor_data['customer_support']['address2'] = isset( $vendor_data['address']['street_2'] ) ? $vendor_data['address']['street_2'] : '';
-		$vendor_data['customer_support']['country']  = isset( $vendor_data['address']['country'] ) ? $vendor_data['address']['country'] : '';
-		$vendor_data['customer_support']['city']     = isset( $vendor_data['address']['city'] ) ? $vendor_data['address']['city'] : '';
-		$vendor_data['customer_support']['state']    = isset( $vendor_data['address']['state'] ) ? $vendor_data['address']['state'] : '';
-		$vendor_data['customer_support']['zip']      = isset( $vendor_data['address']['zip'] ) ? $vendor_data['address']['zip'] : '';
-		
-		// Store Policy
-		$wcfm_policy_vendor_options = array();
-		$wcfm_policy_vendor_options['policy_tab_title']    = ''; 
-		$wcfm_policy_vendor_options['shipping_policy']     = get_user_meta( $vendor_id, '_dps_ship_policy', true );
-		$wcfm_policy_vendor_options['refund_policy']       = get_user_meta( $vendor_id, '_dps_refund_policy', true );
-		$wcfm_policy_vendor_options['cancellation_policy'] = get_user_meta( $vendor_id, '_dps_refund_policy', true );
-		update_user_meta( $vendor_id, 'wcfm_policy_vendor_options', $wcfm_policy_vendor_options );
-		
-		// Store SEO
-		$vendor_data['store_seo']['wcfmmp-seo-meta-title']     = isset( $vendor_data['store_seo']['dokan-seo-meta-title'] ) ? $vendor_data['store_seo']['dokan-seo-meta-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-meta-desc']      = isset( $vendor_data['store_seo']['dokan-seo-meta-desc'] ) ? $vendor_data['store_seo']['dokan-seo-meta-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-meta-keywords']  = isset( $vendor_data['store_seo']['dokan-seo-meta-keywords'] ) ? $vendor_data['store_seo']['dokan-seo-meta-keywords'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-title']       = isset( $vendor_data['store_seo']['dokan-seo-og-title'] ) ? $vendor_data['store_seo']['dokan-seo-og-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-desc']        = isset( $vendor_data['store_seo']['dokan-seo-og-desc'] ) ? $vendor_data['store_seo']['dokan-seo-og-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-og-image']       = isset( $vendor_data['store_seo']['dokan-seo-og-image'] ) ? $vendor_data['store_seo']['dokan-seo-og-image'] : 0;
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-title']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-title'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-title'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-desc']   = isset( $vendor_data['store_seo']['dokan-seo-twitter-desc'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-desc'] : '';
-		$vendor_data['store_seo']['wcfmmp-seo-twitter-image']  = isset( $vendor_data['store_seo']['dokan-seo-twitter-image'] ) ? $vendor_data['store_seo']['dokan-seo-twitter-image'] : 0;
-		
-		// Set Store name
-		update_user_meta( $vendor_id, 'store_name', $vendor_data['store_name'] );
-		update_user_meta( $vendor_id, 'wcfmmp_store_name', $vendor_data['store_name'] );
-		
-		// Set Vendor Shipping
-		$wcfmmp_shipping = array ( '_wcfmmp_user_shipping_enable' => 'yes', '_wcfmmp_user_shipping_type' => 'by_zone' );
-		update_user_meta( $vendor_id, '_wcfmmp_shipping', $wcfmmp_shipping );
-		
-		// Store Commission
-		$vendor_data['commission'] = array();
-		$commission_type    = get_user_meta( $vendor_id, 'dokan_admin_percentage_type', true );
-		$commission_value   = get_user_meta( $vendor_id, 'dokan_admin_percentage', true );
-		
-		$vendor_data['commission']['commission_mode']    = 'global';
-		if( $commission_value ) {
-			if ( $commission_type == 'percent') {
-				$vendor_data['commission']['commission_mode']    = $commission_type;
-				$vendor_data['commission']['commission_percent'] = $commission_value; 
-			} else {
-				$vendor_data['commission']['commission_mode']    = $commission_type;
-				$vendor_data['commission']['commission_fixed']   = $commission_value;
-			}
+	/**
+	 * Migrate a vendor to dokan vendor
+	 *
+	 * @param int $vendor_id
+	 * @return void
+	 */
+	public function migrate_vendor( $vendor_id ) {
+		if ( !$vendor_id ) {
+			return false;
 		}
-		$vendor_data['commission']['get_shipping'] = 'yes';
-		$vendor_data['commission']['get_tax'] = 'yes';
-		
-		// Store Genral Setting
-		update_user_meta( $vendor_id, 'wcfmmp_profile_settings', $vendor_data );
-		
+
+		$vendor_user = get_userdata( $vendor_id );
+
+		$vendor_user->set_role('seller');
+
+		$vendor_meta = $this->map_vendor_meta( $vendor_id );
+
+		foreach ( $vendor_meta as $key => $value ) {
+			update_user_meta( $vendor_id, $key, $value );
+		}
+
 		return true;
 	}
 	
@@ -425,7 +376,7 @@ class WCFM_Migrator implements Migrator_Interface {
 									if( $commission_id ) {
 									
 										// Commission Ledger Update
-										$reference_details = sprintf( __( 'Commission for %s order.', 'wc-multivendor-marketplace-migration' ), '<b>' . get_the_title( $product_id ) . '</b>' );
+										$reference_details = sprintf( __( 'Commission for %s order.', 'wc-multivendor-marketplace-migration' ), '<br>' . get_the_title( $product_id ) . '</br>' );
 										try {
 											$wpdb->query(
 														$wpdb->prepare(
@@ -762,5 +713,70 @@ class WCFM_Migrator implements Migrator_Interface {
 		update_user_meta( $vendor_id, '_wcfmmp_unique_id', current_time( 'timestamp' ) );
 		
 		return true;
+	}
+
+	public function map_vendor_settings( $vendor_settings )
+	{
+		$dokan_settings = array();
+
+		$dokan_settings['store_name']                           = $vendor_settings['store_name'];
+		$dokan_settings['social']                               = $vendor_settings['social'];
+		$dokan_settings['social']['flickr']                     = $vendor_settings[''];
+		$dokan_settings['payment']['bank']                      = $vendor_settings['payment']['bank'];
+		$dokan_settings['payment']['paypal']                    = $vendor_settings['payment']['paypal'];
+		$dokan_settings['phone']                                = $vendor_settings['phone'];
+		$dokan_settings['show_email']                           = $vendor_settings[''];
+		$dokan_settings['address']                              = $vendor_settings['address'];
+		$dokan_settings['location']                             = $vendor_settings[''];
+		$dokan_settings['banner']                               = $vendor_settings['banner'];
+		$dokan_settings['icon']                                 = $vendor_settings[''];
+		$dokan_settings['gravatar']                             = $vendor_settings['gravatar'];
+		$dokan_settings['show_more_ptab']                       = 'yes';
+		$dokan_settings['store_ppp']                            = $vendor_settings['store_ppp'];
+		$dokan_settings['enable_tnc']                           = 'off';
+		$dokan_settings['store_tnc']                            = $vendor_settings[''];
+		$dokan_settings['show_min_order_discount']              = 'no';
+		$dokan_settings['store_seo']['dokan-seo-meta-title']    = $vendor_settings['store_seo']['wcfmmp-seo-meta-title'];
+		$dokan_settings['store_seo']['dokan-seo-meta-desc']     = $vendor_settings['store_seo']['wcfmmp-seo-meta-desc'];
+		$dokan_settings['store_seo']['dokan-seo-meta-keywords'] = $vendor_settings['store_seo']['wcfmmp-seo-meta-keywords'];
+		$dokan_settings['store_seo']['dokan-seo-og-title']      = $vendor_settings['store_seo']['wcfmmp-seo-og-title'];
+		$dokan_settings['store_seo']['dokan-seo-og-desc']       = $vendor_settings['store_seo']['wcfmmp-seo-og-desc'];
+		$dokan_settings['store_seo']['dokan-seo-og-image']      = $vendor_settings['store_seo']['wcfmmp-seo-og-image'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-title'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-title'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-desc']  = $vendor_settings['store_seo']['wcfmmp-seo-twitter-desc'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-image'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-image'];
+		$dokan_settings['dokan_store_time_enabled']             = 'yes';
+		$dokan_settings['dokan_store_open_notice']              = $vendor_settings[''];
+		$dokan_settings['dokan_store_close_notice']             = $vendor_settings[''];
+		$dokan_settings['dokan_store_time']                     = $vendor_settings['wcfm_store_hours'];
+	
+		return $dokan_settings;
+	}
+
+	public function map_vendor_meta( $vendor_id )
+	{
+		$vendor_meta = array();
+		$wcfm_settings = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+
+		$vendor_meta['dokan_store_name'] = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
+		$vendor_meta['dokan_enable_selling'] = user_can( $vendor_id, 'wcfm_vendor' );
+		$vendor_meta['dokan_publishing'] = 'no';
+		$vendor_meta['dokan_profile_settings'] = $this->map_vendor_settings( $wcfm_settings );
+		$vendor_meta['dokan_feature_seller'] = 'no';
+
+		if (isset($wcfm_settings['commission'])) {
+			$commission_type = $wcfm_settings['commission']['commission_mode'];
+			$commission_value = 0;
+			if ($commission_type == 'percent') {
+				$commission_value = $wcfm_settings['commission']['commission_percent'];
+			} else if(isset($wcfm_settings['commission']['commission_fixed'])) {
+				$commission_value = $wcfm_settings['commission']['commission_fixed'];
+			}
+
+			$vendor_meta['dokan_admin_percentage'] = $commission_value;
+			$vendor_meta['dokan_admin_percentage_type'] = $commission_type;
+		}
+	
+		return $vendor_meta;
 	}
 }
