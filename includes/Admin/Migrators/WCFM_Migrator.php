@@ -836,4 +836,69 @@ class WCFM_Migrator implements Migrator_Interface {
 		
 		return true;
 	}
+
+	public function map_vendor_settings( $vendor_settings )
+	{
+		$dokan_settings = array();
+
+		$dokan_settings['store_name']                           = $vendor_settings['store_name'];
+		$dokan_settings['social']                               = $vendor_settings['social'];
+		$dokan_settings['social']['flickr']                     = $vendor_settings[''];
+		$dokan_settings['payment']['bank']                      = $vendor_settings['payment']['bank'];
+		$dokan_settings['payment']['paypal']                    = $vendor_settings['payment']['paypal'];
+		$dokan_settings['phone']                                = $vendor_settings['phone'];
+		$dokan_settings['show_email']                           = $vendor_settings[''];
+		$dokan_settings['address']                              = $vendor_settings['address'];
+		$dokan_settings['location']                             = $vendor_settings[''];
+		$dokan_settings['banner']                               = $vendor_settings['banner'];
+		$dokan_settings['icon']                                 = $vendor_settings[''];
+		$dokan_settings['gravatar']                             = $vendor_settings['gravatar'];
+		$dokan_settings['show_more_ptab']                       = 'yes';
+		$dokan_settings['store_ppp']                            = $vendor_settings['store_ppp'];
+		$dokan_settings['enable_tnc']                           = 'off';
+		$dokan_settings['store_tnc']                            = $vendor_settings[''];
+		$dokan_settings['show_min_order_discount']              = 'no';
+		$dokan_settings['store_seo']['dokan-seo-meta-title']    = $vendor_settings['store_seo']['wcfmmp-seo-meta-title'];
+		$dokan_settings['store_seo']['dokan-seo-meta-desc']     = $vendor_settings['store_seo']['wcfmmp-seo-meta-desc'];
+		$dokan_settings['store_seo']['dokan-seo-meta-keywords'] = $vendor_settings['store_seo']['wcfmmp-seo-meta-keywords'];
+		$dokan_settings['store_seo']['dokan-seo-og-title']      = $vendor_settings['store_seo']['wcfmmp-seo-og-title'];
+		$dokan_settings['store_seo']['dokan-seo-og-desc']       = $vendor_settings['store_seo']['wcfmmp-seo-og-desc'];
+		$dokan_settings['store_seo']['dokan-seo-og-image']      = $vendor_settings['store_seo']['wcfmmp-seo-og-image'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-title'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-title'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-desc']  = $vendor_settings['store_seo']['wcfmmp-seo-twitter-desc'];
+		$dokan_settings['store_seo']['dokan-seo-twitter-image'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-image'];
+		$dokan_settings['dokan_store_time_enabled']             = 'yes';
+		$dokan_settings['dokan_store_open_notice']              = $vendor_settings[''];
+		$dokan_settings['dokan_store_close_notice']             = $vendor_settings[''];
+		$dokan_settings['dokan_store_time']                     = $vendor_settings['wcfm_store_hours'];
+	
+		return $dokan_settings;
+	}
+
+	public function map_vendor_meta( $vendor_id )
+	{
+		$vendor_meta = array();
+		$wcfm_settings = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
+
+		$vendor_meta['dokan_store_name'] = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
+		$vendor_meta['dokan_enable_selling'] = user_can( $vendor_id, 'wcfm_vendor' );
+		$vendor_meta['dokan_publishing'] = 'no';
+		$vendor_meta['dokan_profile_settings'] = $this->map_vendor_settings( $wcfm_settings );
+		$vendor_meta['dokan_feature_seller'] = 'no';
+
+		if (isset($wcfm_settings['commission'])) {
+			$commission_type = $wcfm_settings['commission']['commission_mode'];
+			$commission_value = 0;
+			if ($commission_type == 'percent') {
+				$commission_value = $wcfm_settings['commission']['commission_percent'];
+			} else if(isset($wcfm_settings['commission']['commission_fixed'])) {
+				$commission_value = $wcfm_settings['commission']['commission_fixed'];
+			}
+
+			$vendor_meta['dokan_admin_percentage'] = $commission_value;
+			$vendor_meta['dokan_admin_percentage_type'] = $commission_type;
+		}
+	
+		return $vendor_meta;
+	}
 }
