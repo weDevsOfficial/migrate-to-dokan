@@ -70,7 +70,11 @@ class WCFM_Migrator implements Migrator_Interface {
 	}
 
 	public function migrate_orders( $limit, $page = 1 ) {
-		$orders = wc_get_orders( [ 'limit' => $limit, 'page' => $page ] );
+		$orders = wc_get_orders( [ 
+			'limit' => $limit,
+			'page' => $page,
+			'order' => 'ASC'
+		] );
 
 		// foreach ( $orders as $order ) {
 		// 	Dokan::migrate_order( $order->ID );
