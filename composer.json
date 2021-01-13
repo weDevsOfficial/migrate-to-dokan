@@ -15,6 +15,8 @@
         "psr-4": {
             "WeDevs\\MigrateToDokan\\": "includes/"
         },
-        "files": []
+        "files": [
+            "helpers/index.php"
+        ]
     }
 }
