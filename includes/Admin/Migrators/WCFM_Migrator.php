@@ -142,6 +142,29 @@ class WCFM_Migrator implements Migrator_Interface {
 		return true;
 	}
 
+	public function migrate_refunds()
+	{
+		global $wpdb;
+		
+		$query = "SELECT
+			refund_id,
+			MAX(order_id) AS order_id,
+			MAX(rf.item_id) AS item_id,
+			MAX( IF(vendor_id > 0, vendor_id, requested_by) ) AS seller_id,
+			MAX(refunded_amount) AS refund_amount,
+			MAX( IF(rf_meta.key = 'refunded_qty', rf_meta.value, 0) ) AS refund_qty,
+			MAX( IF(rf_meta.key = 'refunded_tax', rf_meta.value, 0) ) AS refund_tax,
+			MAX(created) AS created_at,
+			MAX(refund_status) AS refund_status
+			FROM `{$wpdb->prefix}wcfm_marketplace_refund_request` AS rf
+			LEFT JOIN `{$wpdb->prefix}wcfm_marketplace_refund_request_meta` AS rf_meta
+			ON rf.id = rf_meta.refund_id
+			GROUP BY refund_id;
+		";
+		
+		$result = $wpdb->get_results($query);
+	}
+
 	public function map_vendor_settings( $vendor_settings )
 	{
 		$dokan_settings = array();
