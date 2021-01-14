@@ -98,14 +98,13 @@ class WCFM_Migrator implements Migrator_Interface {
 		$results = $wpdb->get_results( $query );
 		
 		foreach ( $results as $request ) {
-			$status = $this->map_status( $request->withdraw_status );
+			$status         = $this->map_status( $request->withdraw_status );
 			
-			$vendor_id = $request->vendor_id;
-			$amount = $request->withdraw_amount;
+			$vendor_id      = $request->vendor_id;
+			$amount         = $request->withdraw_amount;
 
-			$status = $request->withdraw_status;
 			$payment_method = $request->payment_method;
-			$date = $request->created;
+			$date           = $request->created;
 			$note = $request->withdraw_note;
 
 			Dokan::migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note);
@@ -247,11 +246,11 @@ class WCFM_Migrator implements Migrator_Interface {
 
 		$wcfm_settings = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
 
-		$vendor_meta['dokan_store_name'] = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
-		$vendor_meta['dokan_enable_selling'] = user_can( $vendor_id, 'wcfm_vendor' ) ? 'yes' : 'no';
-		$vendor_meta['dokan_publishing'] = 'no';
+		$vendor_meta['dokan_store_name']       = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
+		$vendor_meta['dokan_enable_selling']   = user_can( $vendor_id, 'wcfm_vendor' ) ? 'yes'     : 'no';
+		$vendor_meta['dokan_publishing']       = 'no';
 		$vendor_meta['dokan_profile_settings'] = $this->map_vendor_settings( $wcfm_settings );
-		$vendor_meta['dokan_feature_seller'] = 'no';
+		$vendor_meta['dokan_feature_seller']   = 'no';
 
 		if (isset($wcfm_settings['commission'])) {
 			$commission_type = $wcfm_settings['commission']['commission_mode'];
