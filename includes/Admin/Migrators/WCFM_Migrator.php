@@ -78,7 +78,7 @@ class WCFM_Migrator implements Migrator_Interface {
 		] );
 
 		foreach ( $orders as $order ) {
-			Dokan::migrate_order( $order->ID );
+			Dokan::migrate_order( $order->get_id() );
 		}
 
 		return $orders;
@@ -206,36 +206,36 @@ class WCFM_Migrator implements Migrator_Interface {
 	{
 		$dokan_settings = array();
 
-		$dokan_settings['store_name']                           = $vendor_settings['store_name'];
-		$dokan_settings['social']                               = $vendor_settings['social'];
-		$dokan_settings['social']['flickr']                     = $vendor_settings[''];
-		$dokan_settings['payment']['bank']                      = $vendor_settings['payment']['bank'];
-		$dokan_settings['payment']['paypal']                    = $vendor_settings['payment']['paypal'];
-		$dokan_settings['phone']                                = $vendor_settings['phone'];
-		$dokan_settings['show_email']                           = $vendor_settings[''];
-		$dokan_settings['address']                              = $vendor_settings['address'];
-		$dokan_settings['location']                             = $vendor_settings[''];
-		$dokan_settings['banner']                               = $vendor_settings['banner'];
-		$dokan_settings['icon']                                 = $vendor_settings[''];
-		$dokan_settings['gravatar']                             = $vendor_settings['gravatar'];
+		$dokan_settings['store_name']                           = isset($vendor_settings['store_name']) ? $vendor_settings['store_name'] : '';
+		$dokan_settings['social']                               = isset($vendor_settings['social']) ? $vendor_settings['social'] : '';
+		// $dokan_settings['social']['flickr']                     = $vendor_settings[''];
+		$dokan_settings['payment']['bank']                      = isset($vendor_settings['payment']['bank']) ? $vendor_settings['payment']['bank'] : '';
+		$dokan_settings['payment']['paypal']                    = isset($vendor_settings['payment']['paypal']) ? $vendor_settings['payment']['bank'] : '';
+		$dokan_settings['phone']                                = isset($vendor_settings['phone']) ? $vendor_settings['phone'] : '';
+		// $dokan_settings['show_email']                           = $vendor_settings[''];
+		$dokan_settings['address']                              = isset($vendor_settings['address']) ? $vendor_settings['address'] : '';
+		// $dokan_settings['location']                             = $vendor_settings[''];
+		$dokan_settings['banner']                               = isset($vendor_settings['banner']) ? $vendor_settings['banner'] : '';
+		// $dokan_settings['icon']                                 = $vendor_settings[''];
+		$dokan_settings['gravatar']                             = isset($vendor_settings['gravatar']) ? $vendor_settings['gravatar'] : '';
 		$dokan_settings['show_more_ptab']                       = 'yes';
-		$dokan_settings['store_ppp']                            = $vendor_settings['store_ppp'];
+		$dokan_settings['store_ppp']                            = isset($vendor_settings['store_ppp']) ? $vendor_settings['store_ppp'] : '';
 		$dokan_settings['enable_tnc']                           = 'off';
-		$dokan_settings['store_tnc']                            = $vendor_settings[''];
+		// $dokan_settings['store_tnc']                            = $vendor_settings[''];
 		$dokan_settings['show_min_order_discount']              = 'no';
-		$dokan_settings['store_seo']['dokan-seo-meta-title']    = $vendor_settings['store_seo']['wcfmmp-seo-meta-title'];
-		$dokan_settings['store_seo']['dokan-seo-meta-desc']     = $vendor_settings['store_seo']['wcfmmp-seo-meta-desc'];
-		$dokan_settings['store_seo']['dokan-seo-meta-keywords'] = $vendor_settings['store_seo']['wcfmmp-seo-meta-keywords'];
-		$dokan_settings['store_seo']['dokan-seo-og-title']      = $vendor_settings['store_seo']['wcfmmp-seo-og-title'];
-		$dokan_settings['store_seo']['dokan-seo-og-desc']       = $vendor_settings['store_seo']['wcfmmp-seo-og-desc'];
-		$dokan_settings['store_seo']['dokan-seo-og-image']      = $vendor_settings['store_seo']['wcfmmp-seo-og-image'];
-		$dokan_settings['store_seo']['dokan-seo-twitter-title'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-title'];
-		$dokan_settings['store_seo']['dokan-seo-twitter-desc']  = $vendor_settings['store_seo']['wcfmmp-seo-twitter-desc'];
-		$dokan_settings['store_seo']['dokan-seo-twitter-image'] = $vendor_settings['store_seo']['wcfmmp-seo-twitter-image'];
+		$dokan_settings['store_seo']['dokan-seo-meta-title']    = isset($vendor_settings['store_seo']['wcfmmp-seo-meta-title']) ? $vendor_settings['store_seo']['wcfmmp-seo-meta-title'] : '';
+		$dokan_settings['store_seo']['dokan-seo-meta-desc']     = isset($vendor_settings['store_seo']['wcfmmp-seo-meta-desc']) ? $vendor_settings['store_seo']['wcfmmp-seo-meta-desc'] : '';
+		$dokan_settings['store_seo']['dokan-seo-meta-keywords'] = isset($vendor_settings['store_seo']['wcfmmp-seo-meta-keywords']) ? $vendor_settings['store_seo']['wcfmmp-seo-meta-keywords'] : '';
+		$dokan_settings['store_seo']['dokan-seo-og-title']      = isset($vendor_settings['store_seo']['wcfmmp-seo-og-title']) ? $vendor_settings['store_seo']['wcfmmp-seo-og-title'] : '';
+		$dokan_settings['store_seo']['dokan-seo-og-desc']       = isset($vendor_settings['store_seo']['wcfmmp-seo-og-desc']) ? $vendor_settings['store_seo']['wcfmmp-seo-og-desc'] : '';
+		$dokan_settings['store_seo']['dokan-seo-og-image']      = isset($vendor_settings['store_seo']['wcfmmp-seo-og-image']) ? $vendor_settings['store_seo']['wcfmmp-seo-og-image'] : '';
+		$dokan_settings['store_seo']['dokan-seo-twitter-title'] = isset($vendor_settings['store_seo']['wcfmmp-seo-twitter-title']) ? $vendor_settings['store_seo']['wcfmmp-seo-twitter-title'] : '';
+		$dokan_settings['store_seo']['dokan-seo-twitter-desc']  = isset($vendor_settings['store_seo']['wcfmmp-seo-twitter-desc']) ? $vendor_settings['store_seo']['wcfmmp-seo-twitter-desc'] : '';
+		$dokan_settings['store_seo']['dokan-seo-twitter-image'] = isset($vendor_settings['store_seo']['wcfmmp-seo-twitter-image']) ? $vendor_settings['store_seo']['wcfmmp-seo-twitter-image'] : '';
 		$dokan_settings['dokan_store_time_enabled']             = 'yes';
-		$dokan_settings['dokan_store_open_notice']              = $vendor_settings[''];
-		$dokan_settings['dokan_store_close_notice']             = $vendor_settings[''];
-		$dokan_settings['dokan_store_time']                     = $vendor_settings['wcfm_store_hours'];
+		// $dokan_settings['dokan_store_open_notice']              = $vendor_settings[''];
+		// $dokan_settings['dokan_store_close_notice']             = $vendor_settings[''];
+		$dokan_settings['dokan_store_time']                     = isset($vendor_settings['wcfm_store_hours']) ? $vendor_settings['wcfm_store_hours'] : '';
 	
 		return $dokan_settings;
 	}
