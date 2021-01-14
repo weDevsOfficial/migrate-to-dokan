@@ -66,7 +66,7 @@ class Dokan {
         }
     }
 
-    public function migrate_refund($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
+    public static function migrate_refund($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
         global $wpdb;
 
         if ( is_array( $item_qtys ) ) {
@@ -85,17 +85,17 @@ class Dokan {
             $wpdb->insert(
                 $wpdb->dokan_refund,
                 array(
-                    'order_id'      => $order_id,
-                    'seller_id'     => $vendor_id,
-                    'refund_amount' => $refund_amount,
-                    'refund_reason' => $refund_reason,
-                    'item_qtys'     => $item_qtys,
-                    'item_totals'   => $item_totals,
+                    'order_id'        => $order_id,
+                    'seller_id'       => $vendor_id,
+                    'refund_amount'   => $refund_amount,
+                    'refund_reason'   => $refund_reason,
+                    'item_qtys'       => $item_qtys,
+                    'item_totals'     => $item_totals,
                     'item_tax_totals' => $item_tax_totals,
-                    'restock_items' => $restock_items,
-                    'date'  => $date,
-                    'status' => $status,
-                    'method' => $payment_method,
+                    'restock_items'   => $restock_items,
+                    'date'            => $date,
+                    'status'          => $status,
+                    'method'          => $payment_method,
                 ),
                 array(
                     '%d',
@@ -126,7 +126,7 @@ class Dokan {
             $wpdb->prepare(
                 "select * from {$wpdb->dokan_vendor_balance} where trn_id = %d and trn_type = %s",
                 $trn_id,
-                'dokan_refund',
+                'dokan_refund'
             )
         );
 
@@ -158,7 +158,7 @@ class Dokan {
             );
         }
 
-        return $$wpdb->insert_id;
+        return $wpdb->insert_id;
     }
 
     public static function migrate_order( $order_id ) {
