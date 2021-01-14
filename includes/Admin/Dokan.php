@@ -3,36 +3,47 @@
 namespace WeDevs\MigrateToDokan\Admin;
 
 class Dokan {
-    public static function migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note,  $ip = null ) {
-        $data = [
-            'id' => 0,
-            'user_id' => $vendor_id,
-            'amount' => $amount,
-            'status' => $status,
-            'method' => $payment_method,
-            'date' => $date,
-            'note' => $note,
-            'ip' => $ip
-        ];
-
-        $withdraw = dokan()->withdraw->create( $data );
-        
-        self::create_vendor_balance_by_withdraw($withdraw);
-
-        return $withdraw;
-    }
-
-    public static function create_vendor_balance_by_withdraw( $withdraw ) {
+    public static function migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note,  $ip = null, $approve_date = null ) {
         global $wpdb;
 
-        if ( $withdraw->status != 1 ) {
-            return;
+        $data = [
+            'user_id' => $vendor_id,
+            'amount'  => $amount,
+            'status'  => $status,
+            'method'  => $payment_method,
+            'date'    => $date,
+            'note'    => $note,
+            'ip'      => $ip ?: ''
+        ];
+        
+        $wpdb->insert(
+            $wpdb->dokan_withdraw,
+            $data,
+            array(
+                '%d',
+                '%f',
+                '%d',
+                '%s',
+                '%s',
+                '%s',
+                '%s'
+            )
+        );
+
+        if ( $wpdb->insert_id && $status == 1 ) {
+            self::create_vendor_balance_by_withdraw( $wpdb->insert_id, $vendor_id, $amount, $date, $approve_date );
         }
+
+        return $wpdb->insert_id;
+    }
+
+    public static function create_vendor_balance_by_withdraw( $withdraw_id, $vendor_id, $amount, $trn_date, $approve_date ) {
+        global $wpdb;
 
         $balance_result = $wpdb->get_row(
             $wpdb->prepare(
                 "select * from {$wpdb->dokan_vendor_balance} where trn_id = %d and trn_type = %s",
-                $withdraw->get_id(),
+                $withdraw_id,
                 'dokan_withdraw'
             )
         );
@@ -41,15 +52,15 @@ class Dokan {
             $wpdb->insert(
                 $wpdb->dokan_vendor_balance,
                 array(
-                    'vendor_id'     => $withdraw->get_user_id(),
-                    'trn_id'        => $withdraw->get_id(),
+                    'vendor_id'     => $vendor_id,
+                    'trn_id'        => $withdraw_id,
                     'trn_type'      => 'dokan_withdraw',
                     'perticulars'   => 'Approve withdraw request migrated',
                     'debit'         => 0,
-                    'credit'        => $withdraw->get_amount(),
+                    'credit'        => $amount,
                     'status'        => 'approved',
-                    'trn_date'      => $withdraw->get_date(),
-                    'balance_date'  => current_time( 'mysql' ),
+                    'trn_date'      => $trn_date,
+                    'balance_date'  => $approve_date ?: current_time( 'mysql' ),
                 ),
                 array(
                     '%d',
@@ -66,7 +77,7 @@ class Dokan {
         }
     }
 
-    public function migrate_refund($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
+    public static function migrate_refund($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
         global $wpdb;
 
         if ( is_array( $item_qtys ) ) {
@@ -85,17 +96,17 @@ class Dokan {
             $wpdb->insert(
                 $wpdb->dokan_refund,
                 array(
-                    'order_id'      => $order_id,
-                    'seller_id'     => $vendor_id,
-                    'refund_amount' => $refund_amount,
-                    'refund_reason' => $refund_reason,
-                    'item_qtys'     => $item_qtys,
-                    'item_totals'   => $item_totals,
+                    'order_id'        => $order_id,
+                    'seller_id'       => $vendor_id,
+                    'refund_amount'   => $refund_amount,
+                    'refund_reason'   => $refund_reason,
+                    'item_qtys'       => $item_qtys,
+                    'item_totals'     => $item_totals,
                     'item_tax_totals' => $item_tax_totals,
-                    'restock_items' => $restock_items,
-                    'date'  => $date,
-                    'status' => $status,
-                    'method' => $payment_method,
+                    'restock_items'   => $restock_items,
+                    'date'            => $date,
+                    'status'          => $status,
+                    'method'          => $payment_method,
                 ),
                 array(
                     '%d',
@@ -126,7 +137,7 @@ class Dokan {
             $wpdb->prepare(
                 "select * from {$wpdb->dokan_vendor_balance} where trn_id = %d and trn_type = %s",
                 $trn_id,
-                'dokan_refund',
+                'dokan_refund'
             )
         );
 
@@ -158,7 +169,7 @@ class Dokan {
             );
         }
 
-        return $$wpdb->insert_id;
+        return $wpdb->insert_id;
     }
 
     public static function migrate_order( $order_id ) {

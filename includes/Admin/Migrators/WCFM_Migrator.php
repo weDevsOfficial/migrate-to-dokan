@@ -98,27 +98,13 @@ class WCFM_Migrator implements Migrator_Interface {
 		$results = $wpdb->get_results( $query );
 		
 		foreach ( $results as $request ) {
-			$status = 0;
-			switch ( $request->withdraw_status ) {
-				case 'pending': 
-					$status = 0;
-					break;
-				case 'completed': 
-					$status = 1;
-					break;
-				case 'cancelled': 
-					$status = 2;
-					break;
-				default: 
-					$status = 0;
-					break;
-			}
-			$vendor_id = $request->vendor_id;
-			$amount = $request->withdraw_amount;
+			$status         = $this->map_status( $request->withdraw_status );
+			
+			$vendor_id      = $request->vendor_id;
+			$amount         = $request->withdraw_amount;
 
-			$status = $request->withdraw_status;
 			$payment_method = $request->payment_method;
-			$date = $request->created;
+			$date           = $request->created;
 			$note = $request->withdraw_note;
 
 			Dokan::migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note);
@@ -149,6 +135,30 @@ class WCFM_Migrator implements Migrator_Interface {
 		return true;
 	}
 
+	private function map_status( $wcfm_status ) {
+		$status = 0;
+		
+		switch ( $wcfm_status ) {
+			case 'pending': 
+				$status = 0;
+				break;
+			case 'requested': 
+				$status = 0;
+				break;
+			case 'completed': 
+				$status = 1;
+				break;
+			case 'cancelled': 
+				$status = 2;
+				break;
+			default: 
+				$status = 0;
+				break;
+		}
+
+		return $status;
+	}
+
 	public function migrate_refunds()
 	{
 		global $wpdb;
@@ -162,14 +172,34 @@ class WCFM_Migrator implements Migrator_Interface {
 			MAX( IF(rf_meta.key = 'refunded_qty', rf_meta.value, 0) ) AS refund_qty,
 			MAX( IF(rf_meta.key = 'refunded_tax', rf_meta.value, 0) ) AS refund_tax,
 			MAX(created) AS created_at,
-			MAX(refund_status) AS refund_status
+			MAX(refund_status) AS refund_status,
+			MAX(refund_reason) AS refund_reason,
+			MAX(refund_paid_date) AS approved_at 
 			FROM `{$wpdb->prefix}wcfm_marketplace_refund_request` AS rf
 			LEFT JOIN `{$wpdb->prefix}wcfm_marketplace_refund_request_meta` AS rf_meta
 			ON rf.id = rf_meta.refund_id
 			GROUP BY refund_id;
 		";
 		
-		$result = $wpdb->get_results($query);
+		$results = $wpdb->get_results($query);
+
+		foreach( $results as $request ) {
+			// $vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null
+			Dokan::migrate_refund(
+				$request->seller_id,
+				$request->order_id,
+				$request->refund_amount,
+				$request->refund_reason,
+				[ $request->item_id => $request->refund_qty ],
+				[ $request->item_id => $request->refund_amount ],
+				[ $request->item_id => $request->refund_tax ],
+				$this->map_status( $request->refund_status ),
+				$request->created_at,
+				$request->refund_qty,
+				'',
+				$request->approved_at
+			);
+		}
 	}
 
 	public function map_vendor_settings( $vendor_settings )
@@ -216,11 +246,11 @@ class WCFM_Migrator implements Migrator_Interface {
 
 		$wcfm_settings = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
 
-		$vendor_meta['dokan_store_name'] = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
-		$vendor_meta['dokan_enable_selling'] = user_can( $vendor_id, 'wcfm_vendor' ) ? 'yes' : 'no';
-		$vendor_meta['dokan_publishing'] = 'no';
+		$vendor_meta['dokan_store_name']       = get_user_meta( $vendor_id, 'wcfmmp_store_name' ) ?: get_user_meta( $vendor_id, 'store_name' );
+		$vendor_meta['dokan_enable_selling']   = user_can( $vendor_id, 'wcfm_vendor' ) ? 'yes'     : 'no';
+		$vendor_meta['dokan_publishing']       = 'no';
 		$vendor_meta['dokan_profile_settings'] = $this->map_vendor_settings( $wcfm_settings );
-		$vendor_meta['dokan_feature_seller'] = 'no';
+		$vendor_meta['dokan_feature_seller']   = 'no';
 
 		if (isset($wcfm_settings['commission'])) {
 			$commission_type = $wcfm_settings['commission']['commission_mode'];
