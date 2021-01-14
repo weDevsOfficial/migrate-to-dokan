@@ -77,9 +77,9 @@ class WCFM_Migrator implements Migrator_Interface {
 			'order' => 'ASC'
 		] );
 
-		// foreach ( $orders as $order ) {
-		// 	Dokan::migrate_order( $order->ID );
-		// }
+		foreach ( $orders as $order ) {
+			Dokan::migrate_order( $order->ID );
+		}
 
 		return $orders;
 	}
