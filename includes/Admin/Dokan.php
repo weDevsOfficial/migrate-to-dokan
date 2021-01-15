@@ -3,7 +3,7 @@
 namespace WeDevs\MigrateToDokan\Admin;
 
 class Dokan {
-    public static function migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note,  $ip = null, $approve_date = null ) {
+    public static function migrate_withdraws( $vendor_id, $amount, $status, $payment_method, $date, $note,  $ip = null, $approve_date = null ) {
         global $wpdb;
 
         $data = [
@@ -77,7 +77,7 @@ class Dokan {
         }
     }
 
-    public static function migrate_refund($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
+    public static function migrate_refunds($vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null) {
         global $wpdb;
 
         if ( is_array( $item_qtys ) ) {
@@ -172,7 +172,7 @@ class Dokan {
         return $wpdb->insert_id;
     }
 
-    public static function migrate_order( $order_id ) {
+    public static function migrate_orders( $order_id ) {
         if ( dokan_is_order_already_exists( $order_id ) ) {
             return;
         }
@@ -188,7 +188,7 @@ class Dokan {
         dokan_sync_insert_order($order_id);
     }
 
-    public static function migrate_vendor( $vendor_id, $vendor_meta ) {
+    public static function migrate_vendors( $vendor_id, $vendor_meta ) {
 		if ( !$vendor_id ) {
 			return false;
 		}

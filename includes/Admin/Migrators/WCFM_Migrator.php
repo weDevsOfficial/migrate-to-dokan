@@ -62,10 +62,10 @@ class WCFM_Migrator implements Migrator_Interface {
 
     public function migrate()
     {
-		$this->migrate_withdraw();
-		$this->migrate_refunds();
+		$this->migrate_withdraws();
+		$this->migrate_refundss();
 
-		$this->migrate_vendor();
+		$this->migrate_vendors();
 
 		$this->migrate_orders(5);
 	}
@@ -78,7 +78,7 @@ class WCFM_Migrator implements Migrator_Interface {
 		] );
 
 		foreach ( $orders as $order ) {
-			Dokan::migrate_order( $order->get_id() );
+			Dokan::migrate_orders( $order->get_id() );
 		}
 
 		return $orders;
@@ -90,7 +90,7 @@ class WCFM_Migrator implements Migrator_Interface {
 		
 	}
 	
-	public function migrate_withdraw() {
+	public function migrate_withdraws() {
 		global $wpdb;
 		
 		$query = "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_withdraw_request`";
@@ -107,7 +107,7 @@ class WCFM_Migrator implements Migrator_Interface {
 			$date           = $request->created;
 			$note = $request->withdraw_note;
 
-			Dokan::migrate_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note);
+			Dokan::migrate_withdraws( $vendor_id, $amount, $status, $payment_method, $date, $note);
 		} 
 	}
 
@@ -117,11 +117,11 @@ class WCFM_Migrator implements Migrator_Interface {
 	 * @param int $vendor_id
 	 * @return void
 	 */
-	public function migrate_vendor() {
+	public function migrate_vendors() {
 		$vendors = $this->get_all_vendors();
 
 		if ( ! count( $vendors ) ) {
-			return false;
+			return _e( "Sorry, We don't find any vendor to migrate." );
 		}
 		
 		foreach ( $vendors as $vendor ) {
@@ -129,10 +129,10 @@ class WCFM_Migrator implements Migrator_Interface {
 
 			$vendor_meta = $this->map_vendor_meta( $vendor_id );
 
-			Dokan::migrate_vendor( $vendor_id, $vendor_meta );
+			Dokan::migrate_vendors( $vendor_id, $vendor_meta );
 		}
 		
-		return true;
+		return _e( "Success! Vendors migration completed successfully!" );
 	}
 
 	private function map_status( $wcfm_status ) {
@@ -185,7 +185,7 @@ class WCFM_Migrator implements Migrator_Interface {
 
 		foreach( $results as $request ) {
 			// $vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null
-			Dokan::migrate_refund(
+			Dokan::migrate_refunds(
 				$request->seller_id,
 				$request->order_id,
 				$request->refund_amount,

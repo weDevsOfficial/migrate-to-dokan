@@ -2,6 +2,8 @@
 
 namespace WeDevs\MigrateToDokan\REST;
 
+use WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator;
+
 class Manager {
 
 	protected $namespace = 'migrate-to-dokan/v1';
@@ -42,18 +44,34 @@ class Manager {
 	}
 
 	public function migrate_vendor() {
-	    return new \WP_REST_Response( "Call vendor method here" );
+		$migrator = new WCFM_Migrator();
+		
+		return new \WP_REST_Response( 
+			$migrator->migrate_vendors()
+		);
 	}
 
 	public function migrate_withdraw() {
-	    return new \WP_REST_Response( "Call withdraw method here" );
+		$migrator = new WCFM_Migrator();
+
+	    return new \WP_REST_Response( 
+			$migrator->migrate_withdraws()
+		);
 	}
 
 	public function migrate_order() {
-	    return new \WP_REST_Response( "Call order method here" );
+		$migrator = new WCFM_Migrator();
+
+	    return new \WP_REST_Response( 
+			$migrator->migrate_orders(5)
+		);
 	}
 
 	public function migrate_refund() {
-	    return new \WP_REST_Response( "Call refund method here" );
+		$migrator = new WCFM_Migrator();
+
+	    return new \WP_REST_Response( 
+			$migrator->migrate_refunds()
+		);
 	}
 }

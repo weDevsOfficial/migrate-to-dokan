@@ -12,7 +12,7 @@ class Menu {
 	}
 
 	public function add_migrate_to_dokan_menu() {
-		add_menu_page( __( 'Migrate to Dokan', 'weDevs'), __( 'Migrate To Dokan', 'weDevs'), 'manage_options', 'migrate-to-dokan-menu', [ $this, 'migrate' ], 'dashicons-database' );
+		add_menu_page( __( 'Migrate to Dokan', 'weDevs'), __( 'Migrate To Dokan', 'weDevs'), 'manage_options', 'migrate-to-dokan', [ $this, 'migrate' ], 'dashicons-database' );
 		add_submenu_page( null, '', '', 'manage_options', 'migrate-to-dokan' );
 		//echo 'alkdsfads'; die;
 	}
