@@ -6,9 +6,12 @@ use WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator;
 
 class Manager {
 
+	protected $migrator;
 	protected $namespace = 'migrate-to-dokan/v1';
 
 	public function __construct() {
+		$this->migrator = new WCFM_Migrator();
+
 		add_action( 'rest_api_init', [ $this, 'get_vendor' ] );
 		add_action( 'rest_api_init', [ $this, 'get_withdraw' ] );
 		add_action( 'rest_api_init', [ $this, 'get_order' ] );
@@ -57,34 +60,26 @@ class Manager {
 	}
 
 	public function migrate_vendor() {
-		$migrator = new WCFM_Migrator();
-		
 		return new \WP_REST_Response( 
-			$migrator->migrate_vendors()
+			$this->migrator->migrate_vendors()
 		);
 	}
 
 	public function migrate_withdraw() {
-		$migrator = new WCFM_Migrator();
-
 	    return new \WP_REST_Response( 
-			$migrator->migrate_withdraws()
+			$this->migrator->migrate_withdraws()
 		);
 	}
 
 	public function migrate_order() {
-		$migrator = new WCFM_Migrator();
-
 	    return new \WP_REST_Response( 
-			$migrator->migrate_orders(5)
+			$this->migrator->migrate_orders(5)
 		);
 	}
 
 	public function migrate_refund() {
-		$migrator = new WCFM_Migrator();
-
 	    return new \WP_REST_Response( 
-			$migrator->migrate_refunds()
+			$this->migrator->migrate_refunds()
 		);
 	}
 }
