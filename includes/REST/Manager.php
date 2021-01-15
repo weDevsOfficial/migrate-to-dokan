@@ -16,13 +16,12 @@ class Manager {
 		add_action( 'rest_api_init', [ $this, 'get_withdraw' ] );
 		add_action( 'rest_api_init', [ $this, 'get_order' ] );
 		add_action( 'rest_api_init', [ $this, 'get_refund' ] );
+		add_action( 'rest_api_init', [ $this, 'start_migrator' ] );
 	}
 
 	public function get_vendor() {
 		register_rest_route( 
-			$this->namespace, 
-			'vendor', 
-			[
+			$this->namespace, 'vendor', [
 				'method' => 'GET',
 				'callback' => array( $this, 'migrate_vendor' ),
 				'permission_callback' => array( $this, 'check_permission' ),
@@ -54,6 +53,14 @@ class Manager {
   		] );
 	}
 
+	public function start_migrator() {
+		register_rest_route( $this->namespace, 'start-migration', [
+		    'methods' => 'GET',
+		    'callback' => array( $this, 'migration_start' ),
+		    'permission_callback' => array( $this, 'check_permission' ),
+  		] );	
+	}
+
 	public function check_permission() {
 		return true;
 		// return current_user_can( 'manage_options' );
@@ -81,5 +88,12 @@ class Manager {
 	    return new \WP_REST_Response( 
 			$this->migrator->migrate_refunds()
 		);
+	}
+
+	public function migration_start() {
+		$this->migrate_vendor();
+		$this->migrate_order();
+		$this->migrate_refund();
+		$this->migrate_withdraw();
 	}
 }

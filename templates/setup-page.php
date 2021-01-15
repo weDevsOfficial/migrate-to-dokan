@@ -29,9 +29,9 @@
 
                         <section>
                             <div class="card-section">
-                                <p><strong>Product:</strong></p>
-                                <p><strong>Vendor:</strong></p>
-                                <p><strong>Order:</strong></p>
+                                <p><strong>Product: </strong></p>
+                                <p><strong>Vendor: </strong></p>
+                                <p><strong>Order: </strong></p>
                                 <p>Please <a href=""><strong>Backup</strong></a> Your Database.</p>
                             </div> 
                             <!-- <div class="btn-group"> -->
@@ -61,5 +61,19 @@
             </div>
         </div>
     </div>
+
+    <?php 
+        // $migrator = new WeDevs\MigrateToDokan\REST\Manager();
+        // $migration_start = $migrator->migration_start();
+
+    ?>
+    <script>
+        // var vendor   = "<?php //echo $vendor->data; ?>";
+        var order    = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/order' ); ?>";
+        var refund   = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/refund' ); ?>";
+        var migrateUrl = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/start-migration' ); ?>";
+        var url      = "<?php echo admin_url( 'admin.php?page=migrate-to-dokan' ); ?>"
+    </script>
+    <script src="<?php echo MIGRATE_TO_DOKAN_PLUGIN_ASSEST . '/js/dokan-loader.js'; ?>"></script>
 </body>
 </html>
