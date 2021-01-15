@@ -63,7 +63,7 @@ class WCFM_Migrator implements Migrator_Interface {
     public function migrate()
     {
 		$this->migrate_withdraws();
-		$this->migrate_refundss();
+		$this->migrate_refunds();
 
 		$this->migrate_vendors();
 
@@ -85,10 +85,10 @@ class WCFM_Migrator implements Migrator_Interface {
 	}
 
 
-	public function migrate_refund() {
-		$query = "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_refund_request`";
+	// public function migrate_refund) {
+	// 	$query = "SELECT * FROM `{$wpdb->prefix}wcfm_marketplace_refund_request`";
 		
-	}
+	// }
 	
 	public function migrate_withdraws() {
 		global $wpdb;
