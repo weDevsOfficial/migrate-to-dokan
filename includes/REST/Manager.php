@@ -7,6 +7,7 @@ use WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator;
 class Manager {
 
 	protected $migrator;
+
 	protected $namespace = 'migrate-to-dokan/v1';
 
 	public function __construct() {
@@ -92,8 +93,5 @@ class Manager {
 
 	public function migration_start() {
 		$this->migrate_vendor();
-		$this->migrate_order();
-		$this->migrate_refund();
-		$this->migrate_withdraw();
 	}
 }

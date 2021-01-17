@@ -9,12 +9,12 @@ class WCFM_Migrator implements Migrator_Interface {
 
     public function get_statistics()
     {
-        $product_counts = $this->get_product_counts();
+        // $product_counts = $this->get_product_counts();
         $vendor_counts = $this->get_vendor_counts();
 
         return [
-            'Total Products' => $product_counts,
-            'Total Vendors' => $vendor_counts,
+            'total_products' => $product_counts ?? 0,
+            'total_vendors' => $vendor_counts,
         ];
     }
 

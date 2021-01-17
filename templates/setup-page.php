@@ -29,8 +29,12 @@
 
                         <section>
                             <div class="card-section">
-                                <p><strong>Product: </strong></p>
-                                <p><strong>Vendor: </strong></p>
+
+                                <?php 
+                                    $wcfm_migrator = new WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator();
+                                ?>
+                                <p><strong>Product: <?php echo $wcfm_migrator->get_statistics()['total_products']; ?></strong></p>
+                                <p><strong>Vendor: <?php echo $wcfm_migrator->get_statistics()['total_vendors']; ?></strong></p>
                                 <p><strong>Order: </strong></p>
                                 <p>Please <a href=""><strong>Backup</strong></a> Your Database.</p>
                             </div> 
@@ -41,9 +45,10 @@
 
                         <section>
                             <div class="card-section">
-                                <form action="">
-                                    <p><input type="checkbox"> I have taken Database Backup.</p>
-                                </form>
+                                <div id="success"></div>
+                                <div>
+                                    <a href="#" id="start-migration">Start Migration</a>
+                                </div>
                             </div> 
                             <div class="btn-group">
                                 <button class="previous action-button-previous">Previous</button>
@@ -62,17 +67,10 @@
         </div>
     </div>
 
-    <?php 
-        // $migrator = new WeDevs\MigrateToDokan\REST\Manager();
-        // $migration_start = $migrator->migration_start();
-
-    ?>
     <script>
-        // var vendor   = "<?php //echo $vendor->data; ?>";
-        var order    = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/order' ); ?>";
-        var refund   = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/refund' ); ?>";
-        var migrateUrl = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/start-migration' ); ?>";
-        var url      = "<?php echo admin_url( 'admin.php?page=migrate-to-dokan' ); ?>"
+        var url = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/start-migration' ); ?>";
+        var orderUrl    = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/order' ); ?>";
+        var refundUrl   = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/refund' ); ?>";
     </script>
     <script src="<?php echo MIGRATE_TO_DOKAN_PLUGIN_ASSEST . '/js/dokan-loader.js'; ?>"></script>
 </body>
