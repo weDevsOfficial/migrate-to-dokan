@@ -6,13 +6,11 @@ if (! function_exists( 'migrate_to_dokan_get_vendors' ) ) {
 
         if (! count( $roles ) ) {
             $roles = [
-                'seller', // dokan vendors
                 'wcfm_vendor',
                 'disable_vendor', //wcfm disabled vendors
-                'administrator'
             ];
         }
-        
+        // var_dump( $roles);
         $args = [
             'role__in'   => $roles,
             // 'number'     => 10,
