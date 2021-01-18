@@ -33,9 +33,8 @@
                                 <?php 
                                     $wcfm_migrator = new WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator();
                                 ?>
-                                <p><strong>Product: <?php echo $wcfm_migrator->get_statistics()['total_products']; ?></strong></p>
                                 <p><strong>Vendor: <?php echo $wcfm_migrator->get_statistics()['total_vendors']; ?></strong></p>
-                                <p><strong>Order: </strong></p>
+                                <p><strong>Order: <?php echo $wcfm_migrator->get_statistics()['total_orders']; ?></strong></p>
                                 <p>Please <a href=""><strong>Backup</strong></a> Your Database.</p>
                             </div> 
                             <!-- <div class="btn-group"> -->

@@ -9,11 +9,11 @@ class WCFM_Migrator implements Migrator_Interface {
 
     public function get_statistics()
     {
-        $product_counts = $this->get_product_counts();
-        $vendor_counts = $this->get_vendor_counts();
+		$vendor_counts = $this->get_vendor_counts();
+        $order_counts = $this->get_order_counts();
 
         return [
-            'total_products' => $product_counts ?? 0,
+            'total_orders' => $order_counts,
             'total_vendors' => $vendor_counts,
         ];
     }
@@ -36,10 +36,24 @@ class WCFM_Migrator implements Migrator_Interface {
         
 		foreach( $count_products as $count_product ) {
 			$count_products['any']  += $count_product;
-        }
-
+		}
+		
         return $count_products['any'];
-    }
+	}
+	
+	public function get_order_counts()
+	{
+		$orders_count = wc_orders_count('pending');
+		$orders_count += wc_orders_count('processing');
+		$orders_count += wc_orders_count('on-hold');
+		$orders_count += wc_orders_count('completed');
+		$orders_count += wc_orders_count('cancelled');
+		$orders_count += wc_orders_count('refunded');
+		$orders_count += wc_orders_count('failed');
+
+		return $orders_count;
+	}
+
 
     /**
      * Get the counts of all vendors
