@@ -24,7 +24,8 @@ class Menu {
 			// return;
             //wp_safe_redirect('http://wplearn.test/wp-admin/admin.php?page=migrate-to-dokan1');
         }
-
+		$migrator = Migrator_Manager::get_migrator();
+		
 		$template = MIGRATE_DOKAN_TEMPLATE_DIR . '/setup-page.php';
 		
 		include_once $template;
