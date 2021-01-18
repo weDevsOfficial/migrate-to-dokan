@@ -2,6 +2,8 @@
 
 namespace WeDevs\MigrateToDokan\Admin;
 
+use Exception;
+
 class Dokan {
     public static function migrate_withdraws( $vendor_id, $amount, $status, $payment_method, $date, $note,  $ip = null, $approve_date = null ) {
         global $wpdb;
@@ -176,16 +178,31 @@ class Dokan {
         if ( dokan_is_order_already_exists( $order_id ) ) {
             return;
         }
+        $is_dokan_order = get_post_meta( $order_id, 'is_dokan_order', true);
 
-        dokan()->order->maybe_split_orders( $order_id );
-
-        $has_sub_order = get_post_meta( $order_id, 'has_sub_order', true);
-
-        if ( $has_sub_order == '1' ) {
+        if ( $is_dokan_order ) {
             return;
         }
 
-        dokan_sync_insert_order($order_id);
+        try {
+
+            dokan()->order->maybe_split_orders( $order_id );
+
+            $has_sub_order = get_post_meta( $order_id, 'has_sub_order', true);
+
+            if ( $has_sub_order == '1' ) {
+                return;
+            }
+
+            dokan_sync_insert_order($order_id);
+
+            update_post_meta($order_id, 'is_dokan_order', true);
+
+        } catch (Exception $ex) {
+            $error_orders = get_option('_dokan_migration_error_orders', []);
+            $error_orders[] = $order_id;
+            update_option( '_dokan_migration_error_orders', $error_orders);
+        }
     }
 
     public static function migrate_vendors( $vendor_id, $vendor_meta ) {
