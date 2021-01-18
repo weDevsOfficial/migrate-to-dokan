@@ -35,9 +35,33 @@ var DokanMigrator = {
 	},
 	migrateOrder: function() {
 		this.showMessage('Withdraw migration complete', 'success')
-		this.showMessage('Migrating order, please wait..')
+		this.showMessage(' Migrating order <span class="success" id="order-progress">0%</span>, please wait..')
+		this.migrateOrderByPage(1);
+	},
+	migrateOrderByPage: function(page) {
+		page = page || 1;
 
-		this.migrateData(orderUrl, this.onMigrationSuccess.bind(this));
+		var self = this;
+
+		$.get(orderUrl + '?page=' + page, function(response) {
+			var total = response.total;
+			var page_total = response.per_page * response.current_page;
+			if (page_total > total) {
+				page_total = total;
+			}
+			var percent =  (page_total || 1) / (total || 1) * 100;
+
+			$(document).find('#order-progress').text(percent + '%')
+			if (response.next_page  && response.next_page > 0) {
+				self.migrateOrderByPage(response.next_page);
+			} else {
+				self.onMigrationSuccess()
+			}
+		})
+		.fail(function(error) {
+			console.log(error.responseText);
+			$('#success').html(error.responseText);
+		});
 	},
 
 	showMessage: function(msg, styleClass) {
@@ -58,8 +82,6 @@ var DokanMigrator = {
 	migrateData: function(url, callback) {
 		$.get(url, function(response) {
 			console.log('Success');
-			$('#success').html(response.responseText);
-			
 			if (callback) {
 				callback();
 			}
