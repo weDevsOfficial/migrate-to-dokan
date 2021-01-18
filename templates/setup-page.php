@@ -27,7 +27,7 @@
                             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                         </div><br>
 
-                        <section>
+                        <section id='step-1'>
                             <div class="card-section">
 
                                 <?php 
@@ -39,27 +39,27 @@
                                 <p>Please <a href=""><strong>Backup</strong></a> Your Database.</p>
                             </div> 
                             <!-- <div class="btn-group"> -->
-                                <button class="next action-button">Next</button>
+                                <button id="start-migration" class="next action-button">Start Migration</button>
                             <!-- </div> -->
                         </section>
 
-                        <section>
+                        <section id="step-2">
                             <div class="card-section">
-                                <div id="success"></div>
-                                <div>
-                                    <a href="#" id="start-migration">Start Migration</a>
-                                </div>
+                                <ul id="success">
+
+                                </ul>
                             </div> 
                             <div class="btn-group">
-                                <button class="previous action-button-previous">Previous</button>
-                                <button class="next action-button">Next</button>
+                                <span id="migration-success" class="next"></span>
                             </div>
                         </section>
 
-                        <section>
-                            <div class="card-section">
-                                <strong>Success Message</strong>
+                        <section id="step-3">
+                            <div class="card-section" style="margin-bottom: 50px;">
+                                <h2 style="text-align:center">
+                                <span class="success"> Congratulation! </span>You have successfully migrated to Dokan</h2>
                             </div>
+                            <a href="<?php echo admin_url(); ?>" class="action-button">Go to Dashboard</a>
                         </section>
                     </div>
                 </div>
@@ -68,9 +68,10 @@
     </div>
 
     <script>
-        var url = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/start-migration' ); ?>";
+        var vendorUrl = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/vendor' ); ?>";
         var orderUrl    = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/order' ); ?>";
         var refundUrl   = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/refund' ); ?>";
+        var withdrawUrl   = "<?php echo home_url( 'wp-json/migrate-to-dokan/v1/withdraw' ); ?>";
     </script>
     <script src="<?php echo MIGRATE_TO_DOKAN_PLUGIN_ASSEST . '/js/dokan-loader.js'; ?>"></script>
 </body>

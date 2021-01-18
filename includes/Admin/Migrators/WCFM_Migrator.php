@@ -113,10 +113,6 @@ class WCFM_Migrator implements Migrator_Interface {
 	 */
 	public function migrate_vendors() {
 		$vendors = $this->get_all_vendors();
-
-		if ( ! count( $vendors ) ) {
-			return _e( "Sorry, We don't find any vendor to migrate." );
-		}
 		
 		foreach ( $vendors as $vendor ) {
 			$vendor_id = $vendor->ID;
@@ -126,7 +122,7 @@ class WCFM_Migrator implements Migrator_Interface {
 			Dokan::migrate_vendors( $vendor_id, $vendor_meta );
 		}
 		
-		return _e( "Success! Vendors migration completed successfully!" );
+		return true;
 	}
 
 	private function map_status( $wcfm_status ) {

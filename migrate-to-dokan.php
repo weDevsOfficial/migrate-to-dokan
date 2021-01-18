@@ -30,8 +30,6 @@ final class Migrate_To_Dokan {
         // add_action( 'init', [ $this, 'init_plugin' ] );
 
 	}
-
-
 	public static function init() {
         
         static $instance = false;
@@ -45,7 +43,7 @@ final class Migrate_To_Dokan {
 
     public function instance() {
 		new WeDevs\MigrateToDokan\Admin\Menu();
-        new WeDevs\MigrateToDokan\REST\Manager();
+        new WeDevs\MigrateToDokan\REST\Migrator_Controller();
     }
     
     public function init_plugin() {

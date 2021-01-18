@@ -20,34 +20,20 @@
     display: none
 }
 .migrate-to-dokan .action-button {
-    width: 100px;
+    /* width: 100px; */
     background: #EF545D;
     font-weight: bold;
     color: white;
     border: 0 none;
     border-radius: 0px;
     cursor: pointer;
-    padding: 10px 5px;
+    padding: 10px 25px;
     margin: 10px 0px 10px 5px;
+    border-radius: 5px;
+    text-decoration: none;
     /* float: right */
 }
 
-.migrate-to-dokan .action-button-previous {
-    width: 100px;
-    background: #616161;
-    font-weight: bold;
-    color: white;
-    border: 0 none;
-    border-radius: 0px;
-    cursor: pointer;
-    padding: 10px 5px;
-    margin: 10px 5px 10px 0px;
-    /* float: right */
-}
-.migrate-to-dokan .action-button-previous:hover,
-.migrate-to-dokan .action-button-previous:focus {
-    background-color: #EF545D;
-}
 .card {
     z-index: 0;
     border: none;
@@ -151,6 +137,13 @@ input[type="button"] {
     width: 80%;
     margin: auto;
 }
-.btn-group{
 
+#success> li{
+    padding: 5px 0;
+}
+#success> li.success{
+    color: green;
+}
+.success{
+    color: green;
 }
