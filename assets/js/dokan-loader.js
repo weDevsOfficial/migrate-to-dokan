@@ -38,12 +38,13 @@ var DokanMigrator = {
 		this.showMessage(' Migrating order <span class="success" id="order-progress">0%</span>, please wait..')
 		this.migrateOrderByPage(1);
 	},
-	migrateOrderByPage: function(page) {
+	migrateOrderByPage: function(page, per_page) {
 		page = page || 1;
+		per_page = per_page || 1;
 
 		var self = this;
 
-		$.get(orderUrl + '?page=' + page, function(response) {
+		$.get(orderUrl + '?page=' + page + '&per_page=' + per_page, function(response) {
 			var total = response.total;
 			var page_total = response.per_page * response.current_page;
 			if (page_total > total) {
@@ -51,9 +52,9 @@ var DokanMigrator = {
 			}
 			var percent =  (page_total || 1) / (total || 1) * 100;
 
-			$(document).find('#order-progress').text(percent + '%')
+			$(document).find('#order-progress').text(parseInt(percent) + '%')
 			if (response.next_page  && response.next_page > 0) {
-				self.migrateOrderByPage(response.next_page);
+				self.migrateOrderByPage(response.next_page, response.per_page);
 			} else {
 				self.onMigrationSuccess()
 			}

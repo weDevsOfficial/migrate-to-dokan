@@ -184,8 +184,16 @@ class Dokan {
             return;
         }
 
+        $order = dokan()->order->get( $order_id );
+
+        if ( $order->get_parent_id() ) {
+            return;
+        }
+
         try {
             dokan()->order->maybe_split_orders( $order_id );
+
+            update_post_meta( $order_id, 'is_dokan_order_migrated', true );
 
             $has_sub_order = get_post_meta( $order_id, 'has_sub_order', true );
 
@@ -194,8 +202,6 @@ class Dokan {
             }
 
             dokan_sync_insert_order( $order_id );
-
-            update_post_meta( $order_id, 'is_dokan_order', true );
         } catch ( Exception $ex ) {
             $error_orders   = get_option( '_dokan_migration_error_orders', [] );
             $error_orders[] = $order_id;
