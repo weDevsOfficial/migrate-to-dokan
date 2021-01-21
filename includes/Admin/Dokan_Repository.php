@@ -4,8 +4,8 @@ namespace WeDevs\MigrateToDokan\Admin;
 
 use Exception;
 
-class Dokan {
-    public static function migrate_withdraws( $vendor_id, $amount, $status, $payment_method, $date, $note, $ip = null, $approve_date = null ) {
+class Dokan_Repository {
+    public function store_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note, $ip = null, $approve_date = null ) {
         global $wpdb;
 
         $data = [
@@ -33,13 +33,13 @@ class Dokan {
         );
 
         if ( $wpdb->insert_id && $status == 1 ) {
-            self::create_vendor_balance_by_withdraw( $wpdb->insert_id, $vendor_id, $amount, $date, $approve_date );
+            $this->store_vendor_balance_for_withdraw( $wpdb->insert_id, $vendor_id, $amount, $date, $approve_date );
         }
 
         return $wpdb->insert_id;
     }
 
-    public static function create_vendor_balance_by_withdraw( $withdraw_id, $vendor_id, $amount, $trn_date, $approve_date ) {
+    public function store_vendor_balance_for_withdraw( $withdraw_id, $vendor_id, $amount, $trn_date, $approve_date ) {
         global $wpdb;
 
         $balance_result = $wpdb->get_row(
@@ -79,7 +79,7 @@ class Dokan {
         }
     }
 
-    public static function migrate_refunds( $vendor_id, $order_id, $refund_amount, $refund_reason, $item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items, $payment_method, $approved_date = null ) {
+    public function store_refund( $vendor_id, $order_id, $refund_amount, $refund_reason, $item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items, $payment_method, $approved_date = null ) {
         global $wpdb;
 
         if ( is_array( $item_qtys ) ) {
@@ -128,11 +128,11 @@ class Dokan {
         $trn_id = $wpdb->insert_id;
 
         if ( $trn_id && $status == 1 ) {
-            self::create_vendor_balance_refund( $vendor_id, $trn_id, $refund_amount, $date, $approved_date );
+            $this->store_vendor_balance_refund( $vendor_id, $trn_id, $refund_amount, $date, $approved_date );
         }
     }
 
-    public static function create_vendor_balance_refund( $vendor_id, $trn_id, $amount, $date, $approved_date = null ) {
+    public function store_vendor_balance_refund( $vendor_id, $trn_id, $amount, $date, $approved_date = null ) {
         global $wpdb;
 
         $balance_result = $wpdb->get_row(
@@ -174,7 +174,7 @@ class Dokan {
         return $wpdb->insert_id;
     }
 
-    public static function migrate_orders( $order_id ) {
+    public function store_order( $order_id ) {
         if ( dokan_is_order_already_exists( $order_id ) ) {
             return;
         }
@@ -209,7 +209,7 @@ class Dokan {
         }
     }
 
-    public static function migrate_vendors( $vendor_id, $vendor_meta ) {
+    public function store_vendor( $vendor_id, $vendor_meta ) {
         if ( !$vendor_id ) {
             return false;
         }

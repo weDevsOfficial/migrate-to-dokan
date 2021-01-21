@@ -2,30 +2,60 @@
 
 namespace WeDevs\MigrateToDokan\Admin\Migrators;
 
-use WeDevs\MigrateToDokan\Admin\Dokan;
+use WeDevs\MigrateToDokan\Admin\Dokan_Repository;
 use WeDevs\MigrateToDokan\Admin\Migrator_Interface;
 
 class WCFM_Migrator implements Migrator_Interface {
-    public function get_statistics() {
+
+    /**
+     * @var Dokan_Repository
+     */
+    protected $repository;
+
+    /**
+     * @var int
+     */
+    protected $vendor_count = 0;
+
+    /**
+     * @var int
+     */
+    protected $order_count = 0;
+
+    public function __construct() {
+        $this->repository = new Dokan_Repository();
+    }
+
+    public function get_statistics( $key = null ) {
         $vendor_counts = $this->get_vendor_counts();
         $order_counts  = $this->get_order_counts();
 
-        return [
+        $data = [
             'total_orders'  => $order_counts,
             'total_vendors' => $vendor_counts,
         ];
+
+        if ( $key ) {
+            return $data[ $key ];
+        }
+
+        return $data;
     }
 
     public function get_order_counts() {
-        $orders_count = wc_orders_count( 'pending' );
-        $orders_count += wc_orders_count( 'processing' );
-        $orders_count += wc_orders_count( 'on-hold' );
-        $orders_count += wc_orders_count( 'completed' );
-        $orders_count += wc_orders_count( 'cancelled' );
-        $orders_count += wc_orders_count( 'refunded' );
-        $orders_count += wc_orders_count( 'failed' );
+        if ( ! $this->order_count ) {
+            $orders_count = wc_orders_count( 'pending' );
+            $orders_count += wc_orders_count( 'processing' );
+            $orders_count += wc_orders_count( 'on-hold' );
+            $orders_count += wc_orders_count( 'completed' );
+            $orders_count += wc_orders_count( 'cancelled' );
+            $orders_count += wc_orders_count( 'refunded' );
+            $orders_count += wc_orders_count( 'failed' );
 
-        return $orders_count;
+            $this->order_count = $orders_count;
+        }
+
+        return $this->order_count;
     }
 
     /**
@@ -36,7 +66,11 @@ class WCFM_Migrator implements Migrator_Interface {
     protected function get_vendor_counts() {
         $vendors = $this->get_all_vendors();
 
-        return is_array( $vendors ) ? count( $vendors ) : 0;
+        if ( ! $this->vendor_count ) {
+            $this->vendor_count = is_array( $vendors ) ? count( $vendors ) : 0;
+        }
+
+        return $this->vendor_count;
     }
 
     protected function get_all_vendors() {
@@ -62,7 +96,7 @@ class WCFM_Migrator implements Migrator_Interface {
         ] );
 
         foreach ( $orders as $order ) {
-            Dokan::migrate_orders( $order->get_id() );
+            $this->repository->store_order( $order->get_id() );
         }
 
         return $orders;
@@ -85,7 +119,7 @@ class WCFM_Migrator implements Migrator_Interface {
             $date           = $request->created;
             $note           = $request->withdraw_note;
 
-            Dokan::migrate_withdraws( $vendor_id, $amount, $status, $payment_method, $date, $note );
+            $this->repository->store_withdraw( $vendor_id, $amount, $status, $payment_method, $date, $note );
         }
     }
 
@@ -104,7 +138,7 @@ class WCFM_Migrator implements Migrator_Interface {
 
             $vendor_meta = $this->map_vendor_meta( $vendor_id );
 
-            Dokan::migrate_vendors( $vendor_id, $vendor_meta );
+            $this->repository->store_vendor( $vendor_id, $vendor_meta );
         }
 
         return true;
@@ -162,7 +196,7 @@ class WCFM_Migrator implements Migrator_Interface {
 
         foreach ( $results as $request ) {
             // $vendor_id, $order_id, $refund_amount, $refund_reason,$item_qtys, $item_totals, $item_tax_totals, $status, $date, $restock_items,  $payment_method, $approved_date = null
-            Dokan::migrate_refunds(
+            $this->repository->store_refund(
                 $request->seller_id,
                 $request->order_id,
                 $request->refund_amount,

@@ -1,113 +1,114 @@
-<?php 
+<?php
 
 namespace WeDevs\MigrateToDokan\REST;
 
+use WeDevs\MigrateToDokan\Admin\Migrator_Interface;
 use WeDevs\MigrateToDokan\Admin\Migrator_Manager;
-use WeDevs\MigrateToDokan\Admin\Migrators\WCFM_Migrator;
 use WP_REST_Controller;
-use WP_REST_Request;
+use WP_REST_Response;
 
-class Migrator_Controller extends WP_REST_Controller{
+class Migrator_Controller extends WP_REST_Controller {
 
-	protected $migrator;
+    /**
+     * @var Migrator_Interface
+     */
+    protected $migrator;
 
-	protected $namespace = 'migrate-to-dokan/v1';
+    protected $namespace = 'migrate-to-dokan/v1';
 
-	public function __construct() {
-		$this->migrator = Migrator_Manager::get_migrator();
-		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
-	}
+    public function __construct() {
+        $this->migrator = Migrator_Manager::get_migrator();
 
-	public function register_routes() {
-		register_rest_route( 
-			$this->namespace, 'vendor', [
-				'method' => 'GET',
-				'callback' => array( $this, 'migrate_vendor' ),
-				'permission_callback' => array( $this, 'check_permission' ),
-			]
-		);
+        add_action( 'rest_api_init', [ $this, 'register_routes' ] );
+    }
 
-		register_rest_route( $this->namespace, 'withdraw', [
-		    'methods' => 'GET',
-		    'callback' => array( $this, 'migrate_withdraw' ),
-		    'permission_callback' => array( $this, 'check_permission' ),
-		] );
+    public function register_routes() {
+        register_rest_route(
+            $this->namespace, 'vendor', [
+                'method'              => 'GET',
+                'callback'            => [ $this, 'migrate_vendor' ],
+                'permission_callback' => [ $this, 'check_permission' ],
+            ]
+        );
 
-		register_rest_route( $this->namespace, 'order', [
-			'methods' => 'GET',
-			'callback' => array( $this, 'migrate_order' ),
-			'permission_callback' => array( $this, 'check_permission' ),
-		] );
-		
-		register_rest_route( $this->namespace, 'refund', [
-			'methods' => 'GET',
-			'callback' => array( $this, 'migrate_refund' ),
-			'permission_callback' => array( $this, 'check_permission' ),
-		] );
-	}
+        register_rest_route( $this->namespace, 'withdraw', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'migrate_withdraw' ],
+            'permission_callback' => [ $this, 'check_permission' ],
+        ] );
 
-	public function check_permission() {
-		return true;
-		// return current_user_can( 'manage_options' );
-	}
+        register_rest_route( $this->namespace, 'order', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'migrate_order' ],
+            'permission_callback' => [ $this, 'check_permission' ],
+        ] );
 
-	public function migrate_vendor() {
+        register_rest_route( $this->namespace, 'refund', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'migrate_refund' ],
+            'permission_callback' => [ $this, 'check_permission' ],
+        ] );
+    }
 
-		$this->migrator->migrate_vendors();
-		
-		return new \WP_REST_Response(
-			array(
-				'status' => 'success',
-				'message' => 'Migrated'
-			)
-		);
-	}
+    public function check_permission() {
+        return true;
+        // return current_user_can( 'manage_options' );
+    }
 
-	public function migrate_withdraw() {
+    public function migrate_vendor() {
+        $this->migrator->migrate_vendors();
 
-		$this->migrator->migrate_withdraws();
+        return new WP_REST_Response(
+            [
+                'status'  => 'success',
+                'message' => 'Migrated',
+            ]
+        );
+    }
 
-	    return new \WP_REST_Response(
-			array(
-				'status' => 'success',
-				'message' => 'Migrated'
-			)
-		);
-	}
+    public function migrate_withdraw() {
+        $this->migrator->migrate_withdraws();
 
-	public function migrate_order() {
-		$page = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-		$per_page = isset($_REQUEST['per_page']) ? $_REQUEST['per_page'] : 5;
-		$total = $this->migrator->get_order_counts();
-		$next_page = null;
+        return new WP_REST_Response(
+            [
+                'status'  => 'success',
+                'message' => 'Migrated',
+            ]
+        );
+    }
 
-		if ( ($page + 1) * $per_page <= $total ) {
-			$next_page = $page + 1;
-		}
+    public function migrate_order() {
+        $page      = isset( $_REQUEST['page'] ) ? $_REQUEST['page'] : 1;
+        $per_page  = isset( $_REQUEST['per_page'] ) ? $_REQUEST['per_page'] : 5;
+        $total     = $this->migrator->get_statistics( 'total_orders' );
+        $next_page = null;
 
-		$this->migrator->migrate_orders($per_page, $page );
+        if ( ( $page + 1 ) * $per_page <= $total ) {
+            $next_page = $page + 1;
+        }
 
-		return new \WP_REST_Response(
-			array(
-				'status' => 'success',
-				'message' => 'Migrated',
-				'total' => $total,
-				'per_page' => $per_page,
-				'next_page' => $next_page,
-				'current_page' => $page
-			)
-		);
-	}
+        $this->migrator->migrate_orders( $per_page, $page );
 
-	public function migrate_refund() {
-		$this->migrator->migrate_refunds();
+        return new WP_REST_Response(
+            [
+                'status'       => 'success',
+                'message'      => 'Migrated',
+                'total'        => $total,
+                'per_page'     => $per_page,
+                'next_page'    => $next_page,
+                'current_page' => $page,
+            ]
+        );
+    }
 
-	    return new \WP_REST_Response(
-			array(
-				'status' => 'success',
-				'message' => 'Migrated'
-			)
-		);
-	}
+    public function migrate_refund() {
+        $this->migrator->migrate_refunds();
 
+        return new WP_REST_Response(
+            [
+                'status'  => 'success',
+                'message' => 'Migrated',
+            ]
+        );
+    }
 }
