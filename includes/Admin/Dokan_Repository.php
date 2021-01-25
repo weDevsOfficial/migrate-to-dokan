@@ -210,7 +210,7 @@ class Dokan_Repository {
     }
 
     public function store_vendor( $vendor_id, $vendor_meta ) {
-        if ( !$vendor_id ) {
+        if ( ! $vendor_id ) {
             return false;
         }
 
