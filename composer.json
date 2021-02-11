@@ -11,10 +11,19 @@
     ],
     "minimum-stability": "dev",
     "require": {},
+    "require-dev": {
+        "wp-coding-standards/wpcs": "dev-master",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+        "tareq1988/wp-php-cs-fixer": "dev-master",
+        "phpcompatibility/phpcompatibility-wp": "dev-master",
+        "phpunit/phpunit": ">=6.5.14"
+    },
     "autoload": {
         "psr-4": {
             "WeDevs\\MigrateToDokan\\": "includes/"
         },
-        "files": []
+        "files": [
+            "helpers/index.php"
+        ]
     }
 }

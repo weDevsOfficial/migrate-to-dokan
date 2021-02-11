@@ -30,8 +30,6 @@ final class Migrate_To_Dokan {
         // add_action( 'init', [ $this, 'init_plugin' ] );
 
 	}
-
-
 	public static function init() {
         
         static $instance = false;
@@ -45,6 +43,7 @@ final class Migrate_To_Dokan {
 
     public function instance() {
 		new WeDevs\MigrateToDokan\Admin\Menu();
+        new WeDevs\MigrateToDokan\REST\Migrator_Controller();
     }
     
     public function init_plugin() {
@@ -53,6 +52,7 @@ final class Migrate_To_Dokan {
         if ( $has_setup_wizard == 'no' ) {
             //wp_safe_redirect('http://wplearn.test/wp-admin/admin.php?page=migrate-to-dokan1');
         }
+
     }
 
 	public function define_constants() {
